@@ -137,6 +137,19 @@ for context_size in context_sizes:
                     'encoder_hidden_size': hidden_size
                 }
 
+new_df = Y_hat_df.iloc[:, :2] # Select LSTM-median as output and reshape back to standard time series format
+new_df = new_df.reset_index()
+new_df = new_df.pivot(index='ds', columns='unique_id', values='LSTM-median')
+new_df=pd.DataFrame(new_df)
+new_df.to_csv('/Users/tianhaochen/Desktop/predictions/SIM1_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/SIM2_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/SIM3_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/SIM4_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/AUTO_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/BRAF_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/OIL_LSTM.csv')
+#new_df.to_csv('/Users/tianhaochen/Desktop/predictions/MAN_LSTM.csv')
+
 
 
 
