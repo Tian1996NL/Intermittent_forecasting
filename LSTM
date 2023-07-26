@@ -1,1 +1,143 @@
+import random
+import warnings
+warnings.filterwarnings("ignore")
+from itertools import product
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import pyreadr
+from neuralforecast import NeuralForecast
+from neuralforecast.losses.pytorch import MQLoss
+from neuralforecast.models import LSTM, DilatedRNN, NHITS
+from sklearn.metrics import mean_squared_error
+import pytorch_lightning as pl
+import torch as t
+from pytorch_lightning import loggers as pl_loggers
+from pytorch_lightning import seed_everything
+from neuralforecast.losses.pytorch import MQLoss, DistributionLoss
+from nixtlats.data.datasets.m4 import M4, M4Info, M4Evaluation
+from nixtlats.data.tsdataset import TimeSeriesDataset
+from nixtlats.data.tsloader import TimeSeriesLoader
+from nixtlats.models.esrnn.esrnn import ESRNN
+import csv
 
+cleaned_Data= pyreadr.read_r("/Users/tianhaochen/Downloads/CleanedData.Rdata")
+
+
+
+# Preparing the required data format
+data = cleaned_Data["SIM1"]
+#data = cleaned_Data["SIM2"]
+#data = cleaned_Data["SIM3"]
+#data = cleaned_Data["SIM4"]
+#data = pd.read_csv("/Users/tianhaochen/Downloads/AUTO_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/BRAF_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/OIL_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/MAN_x.csv")
+
+num_timestamps, num_unique_numbers = data.shape
+indices = np.arange(1, num_unique_numbers + 1) # Create an array of indices from 1 #Repeat the indices for each timestamp
+repeated_indices = np.repeat(indices, num_timestamps) # Repeat the indices for each timestamp # Reshape the arrays to match the stacking dimensions
+tiled_timestamps = np.tile(np.arange(1, num_timestamps + 1), num_unique_numbers)
+y_values = data.values.flatten()
+repeated_indices = repeated_indices.reshape(-1, 1)
+indices = np.broadcast_to(repeated_indices, (num_timestamps * num_unique_numbers, 1))
+tiled_timestamps = tiled_timestamps.reshape(-1, 1)
+tiled_timestamps = np.broadcast_to(tiled_timestamps, (num_timestamps * num_unique_numbers, 1))
+y_values = y_values.reshape(-1, 1)
+
+transformed_data = np.hstack((indices, repeated_indices, tiled_timestamps, y_values)) ## Combine the transformed columns
+
+transformed_data = transformed_data[:, 1:]
+df = pd.DataFrame(transformed_data, columns=['unique_id', 'ds', 'y'])
+# price_sim1['unique_id'] = price_sim1.reset_index().index + 1
+df['ds'] = pd.to_datetime(df['ds'])
+min_value = df['y'].min()
+max_value = df['y'].max()
+df['y'] = (df['y'] - min_value) / (max_value - min_value)
+
+Y_df_test = df.groupby('unique_id').tail(18).copy()
+#Y_df_test = df.groupby('unique_id').tail(7).copy()  #AUTO
+#Y_df_test = df.groupby('unique_id').tail(25).copy() #BRAF
+#Y_df_test = df.groupby('unique_id').tail(15).copy() #OIL
+#Y_df_test = df.groupby('unique_id').tail(45).copy() #MAN
+
+Y_df_train = df.drop(Y_df_test.index)
+Y_df_test_test = df.groupby('unique_id').tail().copy()
+Y_df_test.loc[:, 'y'] = 0 # avoid leaks
+Y_df_full = pd.concat([Y_df_train, Y_df_test]).sort_values(['unique_id', 'ds'], ignore_index=True)
+
+
+
+param_grid = {
+    'context_size': np.arange(1, 13, 1),
+    'encoder_n_layers': np.arange(2, 11, 2),
+    'encoder_hidden_size': np.arange(200, 1001, 200)
+}
+
+horizon = 18
+#horizon = 7 #AUTO
+#horizon = 25 #BRAF
+#horizon = 15 #OIL
+#horizon = 45 #MAN
+
+levels = [80, 90]
+        
+context_sizes = np.arange(4, 13, 4)
+encoder_n_layers = np.arange(2, 6, 2)
+encoder_hidden_sizes = np.arange(200, 401, 100)
+        
+
+best_rmse = float('inf')
+best_mse = float('inf')
+best_mase = float('inf')
+best_rmsse = float('inf')
+best_params = {}
+        
+
+# Iterate over the parameter ranges
+for context_size in context_sizes:
+    for n_layers in encoder_n_layers:
+        for hidden_size in encoder_hidden_sizes:
+            # Create a new LSTM model with the current hyperparameters
+            model = LSTM(
+                input_size=-1,
+                h=horizon,
+                context_size=context_size,
+                loss=MQLoss(level=levels),
+                max_steps=200,
+                encoder_n_layers=n_layers,
+                encoder_hidden_size=hidden_size
+            )
+            # Create the NeuralForecast object with the current model
+            nf = NeuralForecast(models=[model], freq='M')
+
+            nf.fit(df=Y_df_train)
+
+            # Perform prediction on the test data
+            Y_hat_df = nf.predict()
+
+            Y_hat_df['LSTM-median'] = Y_hat_df['LSTM-median'] * (max_value - min_value) + min_value
+
+            # Calculate metrics 
+            mse = mean_squared_error(Y_df_test['y'], Y_hat_df['LSTM-median'])
+            rmse = np.sqrt(mse)
+            mase = mean_absolute_error(Y_df_test['y'], Y_hat_df['LSTM-median']) / np.mean(np.abs(np.diff(Y_df_train['y'])))
+            rmsse = mase / np.mean(np.abs(np.diff(Y_df_train['y'])))
+
+            # Check if the current hyperparameters produce better metrics
+            if rmse < best_rmse:
+                best_rmse = rmse
+                best_mse = mse
+                best_mase = mase
+                best_rmsse = rmsse
+                best_params = {
+                    'context_size': context_size,
+                    'encoder_n_layers': n_layers,
+                    'encoder_hidden_size': hidden_size
+                }
+
+
+
+
+  
