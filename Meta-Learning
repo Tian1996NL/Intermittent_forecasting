@@ -1,1 +1,710 @@
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import pyreadr
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from itertools import product
+import itertools 
+import xgboost as xgb
+from sklearn.model_selection import GridSearchCV
+
+cleaned_Data = pyreadr.read_r("/Users/tianhaochen/Downloads/CleanedData.Rdata")
+
+
+
+# SIM1
+
+data = cleaned_Data["SIM1"]
+demand = data.values
+
+train_demand = demand[:42]
+test_demand = demand[42:]
+val_demand_test= demand [32:42]
+val_demand_train=demand[0:32]
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_SBA_val.csv')
+# val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_RNN_val.csv') # second pool
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+# val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_SBA.csv')
+# y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+# y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((18, 6500))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+# SIM2
+
+data = cleaned_Data["SIM2"]
+demand = data.values
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_RNN_val.csv')
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((18, 6500))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+#SIM3
+
+data = cleaned_Data["SIM3"]
+demand = data.values
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_RNN_val.csv')
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((18, 6500))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+#SIM4
+
+data = cleaned_Data["SIM4"]
+demand = data.values
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_RNN_val.csv')
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((18, 6500))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+#AUTO
+
+data = pd.read_csv("/Users/tianhaochen/Downloads/AUTO_x.csv")
+demand = data.values
+
+train_demand = demand[:17]
+test_demand = demand[17:]
+val_demand_test= demand [13:17]
+val_demand_train=demand[0:13]
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_RNN_val.csv')
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((7, 3000))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+# BRAF
+data = pd.read_csv("/Users/tianhaochen/Downloads/BRAF_x.csv")
+demand = data.values
+
+train_demand = demand[:59]
+test_demand = demand[59:]
+val_demand_test= demand [44:59]
+val_demand_train=demand[0:44]
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_RNN_val.csv')
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((59, 5000))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+# OIL
+data = pd.read_csv("/Users/tianhaochen/Downloads/OIL_x.csv")
+demand = data.values
+
+train_demand = demand[:40]
+test_demand = demand[40:]
+val_demand_test= demand [30:40]
+val_demand_train=demand[0:30]
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_RNN_val.csv')
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((40, 7644))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+# MAN
+data = pd.read_csv("/Users/tianhaochen/Downloads/MAN_x.csv")
+demand = data.values
+
+train_demand = demand[:105]
+test_demand = demand[105:150]
+val_demand_test= demand [75:105]
+val_demand_train=demand[0:75]
+
+val_y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_Croston_val.csv')
+val_y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_CrostonT_val.csv')
+val_y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_TSB_val.csv')
+val_y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_SBA_val.csv')
+#val_y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_RNN_val.csv')
+
+val_y_hat_array_croston_classic = val_y_hat_array_croston_classic.iloc[:, 1:].values
+val_y_hat_array_croston_optimized = val_y_hat_array_croston_optimized.iloc[:, 1:] .values
+val_y_hat_array_tsb = val_y_hat_array_tsb.iloc[:, 1:].values
+val_y_hat_array_croston_sba=val_y_hat_array_croston_sba.iloc[:, 1:].values
+#val_y_hat_array_croston_RNN=val_y_hat_array_croston_RNN.iloc[:, 1:].values
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_SBA.csv')
+#y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+#y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+
+base_predictions = pd.DataFrame({
+    'tsb': val_y_hat_array_tsb.flatten(),
+    'croston_classic': val_y_hat_array_croston_classic.flatten(),
+    'croston_optimized': val_y_hat_array_croston_optimized.flatten(),
+    'croston_sba': val_y_hat_array_croston_sba.flatten(),
+  # 'RNN': val_y_hat_array_croston_RNN.flatten(),
+    'actual_values': val_demand_test.flatten()
+})
+
+meta_features = base_predictions.iloc[:, :-1]
+meta_target = base_predictions['actual_values']
+dtrain = xgb.DMatrix(data=meta_features, label=meta_target)
+
+param_grid = {'max_depth': np.arange(1, 11, 1)}
+    
+xgb_model = xgb.XGBRegressor(objective='reg:squarederror', subsample=1, colsample_bytree=1) # Create the XGBoost model
+
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, scoring='neg_root_mean_squared_error') # Create the GridSearchCV object
+
+grid_search.fit(meta_features, meta_target)
+
+params = {
+    'objective': 'reg:squarederror', 
+    'eval_metric': 'rmse', 
+    'max_depth': 3,  
+    'eta': 0.1,  # Learning rate
+    'subsample': 1,  
+    'colsample_bytree': 
+}
+best_max_depth = grid_search.best_params_['max_depth']
+params['max_depth'] = best_max_depth
+
+
+xgb_model = xgb.train(params=params, dtrain=dtrain, num_boost_round=100) 
+
+new_data = pd.DataFrame({
+    'tsb': y_hat_array_tsb.flatten(),
+    'croston_classic': y_hat_array_croston_classic.flatten(),
+    'croston_optimized': y_hat_array_croston_optimized.flatten(),
+    'croston_sba': y_hat_array_croston_sba.flatten(),
+  # 'RNN': y_hat_array_croston_RNN.flatten()
+})
+
+dnew = xgb.DMatrix(data=new_data)
+
+meta_preds = xgb_model.predict(dnew)
+meta_preds= ensemble_preds.reshape((45, 1392))
+
+meta_mse=  mean_squared_error(test_demand, meta_preds)
+meta_rmse = np.sqrt(meta_mse)
+meta_mase = mean_absolute_error(test_demand,meta_preds ) / np.mean(np.abs(np.diff(train_demand)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(train_demand)))
+
+
+
+
+
+
+
+
+
