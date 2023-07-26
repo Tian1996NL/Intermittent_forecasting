@@ -6,4 +6,4 @@ The code for the Willemain method and the framework for price generation is base
 References:
 De Haan, D.(2021). A repository with both industrial and simulated datasets on spare part demand forecasting, with the intention of benchmarking them. Retrieved from https://github.com/danieldehaan96/spdf
 
-Nguyen, K.(2023). Forecasting the demands of spare parts, using 7 different methods on 8 data sets (industrial and simulated). Retrieved from https://github.com/KhueNguyenTK/Spare- Part-Demand-Forecasting
+Nguyen, K.(2023). Forecasting the demands of spare parts, using 7 different methods on 8 data sets (industrial and simulated). Retrieved from https://github.com/KhueNguyenTK/Spare-Part-Demand-Forecasting
