@@ -1,0 +1,646 @@
+#--------------------------INVENTORY PERFORMANCE RESULTS-GRAPHS---------------------------------------#
+library(readr)
+library(ggplot2)
+library(knitr)
+library(patchwork)
+
+
+Croston_IPM_GAMMA_SIM1 <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM1.csv")
+Croston_Tuned_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM1.csv")
+TSB_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM1.csv")
+SBA_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM1.csv")
+RNN_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM1.csv")
+LSTM_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM1.csv")
+ESRNN_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM1.csv")
+META1_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM1 .csv")
+META2_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM1.csv")
+EN1_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM1.csv")
+EN2_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM1.csv")
+WILLEMAIN_IPM_GAMMA_SIM1<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM1.csv")
+
+
+servicelevelsSIM1 <- rbind(Croston_IPM_GAMMA_SIM1, 
+                           Croston_Tuned_IPM_GAMMA_SIM1,
+                           TSB_IPM_GAMMA_SIM1,
+                           SBA_IPM_GAMMA_SIM1,
+                           LSTM_IPM_GAMMA_SIM1,
+                           RNN_IPM_GAMMA_SIM1,
+                           ESRNN_IPM_GAMMA_SIM1,
+                           EN1_IPM_GAMMA_SIM1,
+                           EN2_IPM_GAMMA_SIM1,
+                           META1_IPM_GAMMA_SIM1,
+                           META2_IPM_GAMMA_SIM1,
+                           WILLEMAIN_IPM_GAMMA_SIM1)
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA" = "plum1"
+)
+
+x1<-ggplot(servicelevelsSIM1, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x2<-ggplot(servicelevelsSIM1, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsSIM1, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x4<-ggplot(servicelevelsSIM1, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+Croston_IPM_GAMMA_SIM2 <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM2.csv")
+Croston_Tuned_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM2.csv")
+TSB_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM2.csv")
+SBA_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM2.csv")
+RNN_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM2.csv")
+LSTM_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM2.csv")
+ESRNN_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM2.csv")
+META1_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM2 .csv")
+META2_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM2.csv")
+EN1_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM2.csv")
+EN2_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM2.csv")
+WILLEMAIN_IPM_GAMMA_SIM2<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM2.csv")
+
+
+servicelevelsSIM2 <- rbind(Croston_IPM_GAMMA_SIM2, 
+                           Croston_Tuned_IPM_GAMMA_SIM2,
+                           TSB_IPM_GAMMA_SIM2,
+                           SBA_IPM_GAMMA_SIM2,
+                           LSTM_IPM_GAMMA_SIM2,
+                           RNN_IPM_GAMMA_SIM2,
+                           ESRNN_IPM_GAMMA_SIM2,
+                           EN1_IPM_GAMMA_SIM2,
+                           EN2_IPM_GAMMA_SIM2,
+                           META1_IPM_GAMMA_SIM2,
+                           META2_IPM_GAMMA_SIM2,
+                           WILLEMAIN_IPM_GAMMA_SIM2)
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA" = "plum1"
+)
+
+x1<-ggplot(servicelevelsSIM2, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x2<-ggplot(servicelevelsSIM2, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsSIM2, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x4<-ggplot(servicelevelsSIM2, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+Croston_IPM_GAMMA_SIM3 <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM3.csv")
+Croston_Tuned_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM3.csv")
+TSB_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM3.csv")
+SBA_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM3.csv")
+RNN_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM3.csv")
+LSTM_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM3.csv")
+ESRNN_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM3.csv")
+META1_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM3 .csv")
+META2_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM3.csv")
+EN1_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM3.csv")
+EN2_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM3.csv")
+WILLEMAIN_IPM_GAMMA_SIM3<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM3.csv")
+
+
+servicelevelsSIM3 <- rbind(Croston_IPM_GAMMA_SIM3, 
+                           Croston_Tuned_IPM_GAMMA_SIM3,
+                           TSB_IPM_GAMMA_SIM3,
+                           SBA_IPM_GAMMA_SIM3,
+                           LSTM_IPM_GAMMA_SIM3,
+                           RNN_IPM_GAMMA_SIM3,
+                           ESRNN_IPM_GAMMA_SIM3,
+                           EN1_IPM_GAMMA_SIM3,
+                           EN2_IPM_GAMMA_SIM3,
+                           META1_IPM_GAMMA_SIM3,
+                           META2_IPM_GAMMA_SIM3,
+                           WILLEMAIN_IPM_GAMMA_SIM3)
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA" = "plum1"
+)
+
+x1<-ggplot(servicelevelsSIM3, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x2<-ggplot(servicelevelsSIM3, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsSIM3, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x4<-ggplot(servicelevelsSIM3, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+Croston_IPM_GAMMA_SIM4 <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM4.csv")
+Croston_Tuned_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM4.csv")
+TSB_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM4.csv")
+SBA_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM4.csv")
+RNN_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM4.csv")
+LSTM_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM4.csv")
+ESRNN_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM4.csv")
+META1_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM4.csv")
+META2_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM4.csv")
+EN1_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM4.csv")
+EN2_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM4.csv")
+WILLEMAIN_IPM_GAMMA_SIM4<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM4.csv")
+
+
+servicelevelsSIM4 <- rbind(Croston_IPM_GAMMA_SIM4, 
+                           Croston_Tuned_IPM_GAMMA_SIM4,
+                           TSB_IPM_GAMMA_SIM4,
+                           SBA_IPM_GAMMA_SIM4,
+                           LSTM_IPM_GAMMA_SIM4,
+                           RNN_IPM_GAMMA_SIM4,
+                           ESRNN_IPM_GAMMA_SIM4,
+                           EN1_IPM_GAMMA_SIM4,
+                           EN2_IPM_GAMMA_SIM4,
+                           META1_IPM_GAMMA_SIM4,
+                           META2_IPM_GAMMA_SIM4,
+                           WILLEMAIN_IPM_GAMMA_SIM4)
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA" = "plum1"
+)
+
+x1<-ggplot(servicelevelsSIM4, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x2<-ggplot(servicelevelsSIM4, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsSIM4, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x4<-ggplot(servicelevelsSIM4, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+Croston_IPM_GAMMA_AUTO <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_AUTO.csv")
+Croston_Tuned_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_AUTO.csv")
+TSB_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_AUTO.csv")
+SBA_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_AUTO.csv")
+RNN_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_AUTO.csv")
+LSTM_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_AUTO.csv")
+ESRNN_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_AUTO.csv")
+META1_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_AUTO .csv")
+META2_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_AUTO.csv")
+EN1_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_AUTO.csv")
+EN2_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_AUTO.csv")
+WILLEMAIN_IPM_GAMMA_AUTO<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_AUTO.csv")
+
+
+servicelevelsAUTO <- rbind(Croston_IPM_GAMMA_AUTO, 
+                           Croston_Tuned_IPM_GAMMA_AUTO,
+                           TSB_IPM_GAMMA_AUTO,
+                           SBA_IPM_GAMMA_AUTO,
+                           LSTM_IPM_GAMMA_AUTO,
+                           RNN_IPM_GAMMA_AUTO,
+                           ESRNN_IPM_GAMMA_AUTO,
+                           EN1_IPM_GAMMA_AUTO,
+                           EN2_IPM_GAMMA_AUTO,
+                           META1_IPM_GAMMA_AUTO,
+                           META2_IPM_GAMMA_AUTO,
+                           WILLEMAIN_IPM_GAMMA_AUTO)
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA" = "plum1"
+)
+
+x1<-ggplot(servicelevelsAUTO, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x2<-ggplot(servicelevelsAUTO, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsAUTO, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x4<-ggplot(servicelevelsAUTO, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+Croston_IPM_GAMMA_OIL <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_OIL.csv")
+Croston_Tuned_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_OIL.csv")
+TSB_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_OIL.csv")
+SBA_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_OIL.csv")
+RNN_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_OIL.csv")
+LSTM_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_OIL.csv")
+ESRNN_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_OIL.csv")
+META1_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_OIL .csv")
+META2_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_OIL .csv")
+EN1_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_OIL.csv")
+EN2_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_OIL.csv")
+WILLEMAIN_IPM_GAMMA_OIL<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_OIL.csv")
+
+
+servicelevelsOIL <- rbind(Croston_IPM_GAMMA_OIL, 
+                           Croston_Tuned_IPM_GAMMA_OIL,
+                           TSB_IPM_GAMMA_OIL,
+                           SBA_IPM_GAMMA_OIL,
+                           LSTM_IPM_GAMMA_OIL,
+                           RNN_IPM_GAMMA_OIL,
+                           ESRNN_IPM_GAMMA_OIL,
+                           EN1_IPM_GAMMA_OIL,
+                           EN2_IPM_GAMMA_OIL,
+                           META1_IPM_GAMMA_OIL,
+                           META2_IPM_GAMMA_OIL,
+                           WILLEMAIN_IPM_GAMMA_OIL)
+
+servicelevelsOIL$Method <- ifelse(servicelevelsOIL$Method == "SBA", "SBA-OIL-6", servicelevelsOIL$Method)
+
+# Define the custom colors for specific methods
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA-OIL-6" = "plum1"
+)
+
+# Plot (a)
+x1 <- ggplot(servicelevelsOIL, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR") +
+  scale_color_manual(values = method_colors)
+
+# Plot (b)
+x2 <- ggplot(servicelevelsOIL, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  xlim(0.45, 0.55) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs") +
+  scale_color_manual(values = method_colors)
+
+# Plot (c)
+x3 <- ggplot(servicelevelsOIL, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR") +
+  scale_color_manual(values = method_colors)
+
+# Plot (d)
+x4 <- ggplot(servicelevelsOIL, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  xlim(0.6, 0.88) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs") +
+  scale_color_manual(values = method_colors)
+
+library(readr)
+library(ggplot2)
+library(knitr)
+library(patchwork)
+
+
+Croston_IPM_GAMMA_MAN <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_MAN.csv")
+Croston_Tuned_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_MAN.csv")
+TSB_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_MAN.csv")
+SBA_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_MAN.csv")
+RNN_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_MAN.csv")
+LSTM_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_MAN.csv")
+ESRNN_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_MAN.csv")
+META1_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_MAN .csv")
+META2_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_MAN .csv")
+EN1_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_MAN.csv")
+EN2_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_MAN.csv")
+WILLEMAIN_IPM_GAMMA_MAN<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_MAN.csv")
+
+
+
+
+servicelevelsMAN <- rbind(Croston_IPM_GAMMA_MAN, 
+                           Croston_Tuned_IPM_GAMMA_MAN,
+                           TSB_IPM_GAMMA_MAN,
+                           SBA_IPM_GAMMA_MAN,
+                           LSTM_IPM_GAMMA_MAN,
+                           RNN_IPM_GAMMA_MAN,
+                           ESRNN_IPM_GAMMA_MAN,
+                           EN1_IPM_GAMMA_MAN,
+                           EN2_IPM_GAMMA_MAN,
+                           META1_IPM_GAMMA_MAN,
+                           META2_IPM_GAMMA_MAN,
+                           WILLEMAIN_IPM_GAMMA_MAN)
+
+servicelevelsMAN$Method <- ifelse(servicelevelsMAN$Method == "SBA", "SBA-MAN-5", servicelevelsMAN$Method)
+
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA-MAN-5" = "plum1"
+)
+
+x1<-ggplot(servicelevelsMAN, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR") +
+  scale_color_manual(values = method_colors)
+  
+  
+
+
+x2<-ggplot(servicelevelsMAN, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsMAN, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+x4<-ggplot(servicelevelsMAN, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+Croston_IPM_GAMMA_BRAF <- read_csv("/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_BRAF.csv")
+Croston_Tuned_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_BRAF.csv")
+TSB_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_BRAF.csv")
+SBA_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_BRAF.csv")
+RNN_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_BRAF.csv")
+LSTM_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_BRAF.csv")
+ESRNN_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_BRAF.csv")
+META1_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/META1_IPM_GAMMA_BRAF .csv")
+META2_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/META2_IPM_GAMMA_BRAF.csv")
+EN1_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_BRAF.csv")
+EN2_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_BRAF.csv")
+WILLEMAIN_IPM_GAMMA_BRAF<-read_csv("/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_BRAF.csv")
+
+
+servicelevelsBRAF <- rbind(Croston_IPM_GAMMA_BRAF, 
+                           Croston_Tuned_IPM_GAMMA_BRAF,
+                           TSB_IPM_GAMMA_BRAF,
+                           SBA_IPM_GAMMA_BRAF,
+                           LSTM_IPM_GAMMA_BRAF,
+                           RNN_IPM_GAMMA_BRAF,
+                           ESRNN_IPM_GAMMA_BRAF,
+                           EN1_IPM_GAMMA_BRAF,
+                           EN2_IPM_GAMMA_BRAF,
+                           META1_IPM_GAMMA_BRAF,
+                           META2_IPM_GAMMA_BRAF,
+                           WILLEMAIN_IPM_GAMMA_BRAF)
+
+servicelevelsBRAF$Method <- ifelse(servicelevelsBRAF$Method == "SBA", "SBA-BRAF-6", servicelevelsBRAF$Method)
+
+method_colors <- c(
+  "ESRNN" = "deepskyblue",
+  "LSTM" = "yellow",
+  "RNN" = "green3",
+  "WILLEMAIN" = "red",
+  "META-1" = "blue",
+  "META-2" = "blue3",
+  "EN-1" = "gold",
+  "EN-2" = "yellow4",
+  "Croston" = "indianred4",
+  "Croston Tuned" = "hotpink4",
+  "TSB" = "darkorchid1",
+  "SBA-BRAF-6" = "plum1"
+)
+
+x1<-ggplot(servicelevelsBRAF, aes(x = TargetFillRates, y = AchievedFillRates_Avg, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(a) TFR vs. Average-AFR") + 
+  xlab("TFR") + 
+  ylab("Average-AFR")+
+  scale_color_manual(values = method_colors)
+
+
+
+
+x2<-ggplot(servicelevelsBRAF, aes(x = AchievedFillRates_Avg, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(b) Average-AFR vs. Inventory holding costs") + 
+  xlab("Average-AFR") + 
+  ylab("Holding Costs")+
+  scale_color_manual(values = method_colors)
+
+
+x3<-ggplot(servicelevelsBRAF, aes(x = TargetFillRates, y = AchievedFillRates_Total, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(c) TFR vs. Total-AFR") + 
+  xlab("TFR") + 
+  ylab("Total-AFR") +
+  scale_color_manual(values = method_colors)
+
+
+
+x4<-ggplot(servicelevelsBRAF, aes(x = AchievedFillRates_Total, y = HoldingCosts, group = Method)) +
+  geom_line(aes(color = Method)) +
+  geom_point(size = 0.5) +
+  ggtitle("(d) Total-AFR vs. Inventory holding costs") + 
+  xlab("Total-AFR") + 
+  ylab("Holding Costs") +
+  scale_color_manual(values = method_colors)
+
+
+
+
