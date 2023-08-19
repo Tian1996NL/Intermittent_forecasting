@@ -1,0 +1,558 @@
+load("/Users/tianhaochen/Downloads/CleanedData.RData")
+# Exactly the same code used by De Haan (2021), retrieved from https://github.com/danieldehaan96/spdf
+
+# Defining state names for the Markov Chain.
+# Defining the data sets as sequences and replacing the nonzeroes with 1's.
+seqSIM1 <- seqdef(trainSIM1)
+seqSIM1[trainSIM1 != 0] <- 1
+seqSIM1 <- seqdef(seqSIM1)
+
+seqSIM2 <- seqdef(trainSIM2)
+seqSIM2[trainSIM2 != 0] <- 1
+seqSIM2 <- seqdef(seqSIM2)
+
+seqSIM3 <- seqdef(trainSIM3)
+seqSIM3[trainSIM3 != 0] <- 1
+seqSIM3 <- seqdef(seqSIM3)
+
+seqSIM4 <- seqdef(trainSIM4)
+seqSIM4[trainSIM4 != 0] <- 1
+seqSIM4 <- seqdef(seqSIM4)
+
+seqMAN <- seqdef(trainMAN)
+seqMAN[trainMAN != 0] <- 1
+seqMAN <- seqdef(seqMAN)
+
+seqBRAF <- seqdef(trainBRAF)
+seqBRAF[trainBRAF != 0] <- 1
+seqBRAF <- seqdef(seqBRAF)
+
+seqAUTO <- seqdef(trainAUTO)
+seqAUTO[trainAUTO != 0] <- 1
+seqAUTO <- seqdef(seqAUTO)
+
+seqOIL <- seqdef(trainOIL)
+seqOIL[trainOIL != 0] <- 1
+seqOIL[seqOIL != 1] <- 0
+seqOIL <- seqdef(seqOIL)
+
+# Establishing output variables for each data set. 
+
+ltdSIM1=0
+WillemainSIM1=0
+WillemainSDSIM1=0
+predictionWillemainSIM1=matrix(ncol=nrow(testSIM1))
+
+ltdSIM2=0
+WillemainSIM2=0
+WillemainSDSIM2=0
+predictionWillemainSIM2=matrix(ncol=nrow(testSIM2))
+
+ltdSIM3=0
+WillemainSIM3=0
+WillemainSDSIM3=0
+predictionWillemainSIM3=matrix(ncol=nrow(testSIM3))
+
+ltdSIM4=0
+WillemainSIM4=0
+WillemainSDSIM4=0
+predictionWillemainSIM4=matrix(ncol=nrow(testSIM4))
+
+ltdMAN=0
+WillemainMAN=0
+WillemainSDMAN=0
+predictionWillemainMAN=matrix(ncol=nrow(testMAN))
+
+ltdBRAF=0
+WillemainBRAF=0
+WillemainSDBRAF=0
+predictionWillemainBRAF=matrix(ncol=nrow(testBRAF))
+
+ltdAUTO=0
+WillemainAUTO=0
+WillemainSDAUTO=0
+predictionWillemainAUTO=matrix(ncol=nrow(testAUTO))
+
+ltdOIL=0
+WillemainOIL=0
+WillemainSDOIL=0
+predictionWillemainOIL=matrix(ncol=nrow(testOIL))
+
+# Willemain outputs for each data set.
+ptm <- proc.time()
+
+####          Willemain SIM1  ####
+statesNames=c(1) # SIM1 has no zeroes, so a 1x1 matrix is used here instead of the 2x2 for the other transition probability matrices.
+h=18
+for(i in 1:ncol(seqSIM1)){
+  leadtime <- 1
+  sequence <- seqSIM1[[i]]
+  for (variable in 1:h){
+    statesNames=c(1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                    nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM1[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainSIM1[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdSIM1[[y]] <- sum(mcprediction)
+    }
+    WillemainSIM1[[variable]] <- mean(ltdSIM1)
+    WillemainSDSIM1[[variable]] <- sd(ltdSIM1)
+    if(testSIM1[variable,i]>0){sequence <- c(sequence,1)}else{sequence <- c(sequence,0)}
+  }
+predictionWillemainSIM1 <- rbind(predictionWillemainSIM1,WillemainSIM1)  
+}
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainSIM1 <- t(predictionWillemainSIM1)
+forecastwillemainSIM1 <- forecastwillemainSIM1[,-1]
+save(forecastwillemainSIM1,file="C:/users/chent/Downloads/forecastwillemainSIM1.Rda")
+
+meta_mse=  mean_squared_error(testSIM1, forecastwillemainSIM1)
+meta_rmse = np.sqrt(forecastwillemainSIM1)
+meta_mase = mean_absolute_error(test_demand,forecastwillemainSIM1 ) / np.mean(np.abs(np.diff(trainSIM1)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainSIM1)))
+
+####          Willemain SIM2  ####
+h=18
+for(i in 1:ncol(seqSIM2)){
+  leadtime <- 1
+  sequence <- seqSIM2[[i]]
+  for (variable in 1:h){
+    statesNames=c(0,1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    if(length(transprob)!=1){
+      mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                     nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+        mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM2[[i]], n=1),include.t0 = FALSE))
+        nonzeroamount <- length(mcprediction[mcprediction != 0])
+        nonzeroes <- trainSIM2[[i]]
+        mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+        mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+        ltdSIM2[[y]] <- sum(mcprediction)
+      }
+      WillemainSIM2[[variable]] <- mean(ltdSIM2)
+      WillemainSDSIM2[[variable]] <- sd(ltdSIM2)
+      if(testSIM2[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM2[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainSIM2[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdSIM2[[y]] <- sum(mcprediction)
+    }
+    WillemainSIM2[[variable]] <- mean(ltdSIM2)
+    WillemainSDSIM2[[variable]] <- sd(ltdSIM2)
+    if(testSIM2[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainSIM2 <- rbind(predictionWillemainSIM2,WillemainSIM2)  
+}
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainSIM2 <- t(predictionWillemainSIM2)
+forecastwillemainSIM2 <- forecastwillemainSIM2[,-1]
+save(forecastwillemainSIM2,file="C:/users/chent/Downloads/forecastwillemainSIM2.Rda")
+
+meta_mse=  mean_squared_error(testSIM2, forecastwillemainSIM2)
+meta_rmse = np.sqrt(forecastwillemainSIM2)
+meta_mase = mean_absolute_error(testSIM2,forecastwillemainSIM2 ) / np.mean(np.abs(np.diff(trainSIM2)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainSIM2)))
+
+
+
+
+####          Willemain SIM3  ####
+
+h=18
+for(i in 1:ncol(seqSIM3)){
+  leadtime <- 1
+  sequence <- seqSIM3[[i]]
+  for (variable in 1:h){
+    statesNames=c(0,1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    if(length(transprob)!=1){
+      if(sum(transprob[1,])<1){
+        transprob[1,1] <- 0.5
+        transprob[1,2] <- 0.5
+      }
+      if(sum(transprob[2,])<1){
+        transprob[2,1] <- 0.5
+        transprob[2,2] <- 0.5
+      }
+      mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                     nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+        mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM3[[i]], n=1),include.t0 = FALSE))
+        nonzeroamount <- length(mcprediction[mcprediction != 0])
+        nonzeroes <- trainSIM3[[i]]
+        mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+        mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+        ltdSIM3[[y]] <- sum(mcprediction)
+      }
+      WillemainSIM3[[variable]] <- mean(ltdSIM3)
+      WillemainSDSIM3[[variable]] <- sd(ltdSIM3)
+      if(testSIM3[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM3[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainSIM3[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdSIM3[[y]] <- sum(mcprediction)
+    }
+    WillemainSIM3[[variable]] <- mean(ltdSIM3)
+    WillemainSDSIM3[[variable]] <- sd(ltdSIM3)
+    if(testSIM3[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainSIM3 <- rbind(predictionWillemainSIM3,WillemainSIM3)  
+}
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainSIM3 <- t(predictionWillemainSIM3)
+forecastwillemainSIM3 <- forecastwillemainSIM3[,-1]
+save(forecastwillemainSIM3,file="C:/users/chent/Downloads/forecastwillemainSIM3.Rda")
+
+meta_mse=  mean_squared_error(testSIM3, forecastwillemainSIM3)
+meta_rmse = np.sqrt(forecastwillemainSIM3)
+meta_mase = mean_absolute_error(test_demand,forecastwillemainSIM3 ) / np.mean(np.abs(np.diff(trainSIM3)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainSIM3)))
+
+
+
+
+####          Willemain SIM4  ####
+
+h=18
+for(i in 1:ncol(seqSIM4)){
+  leadtime <- 1
+  sequence <- seqSIM4[[i]]
+  for (variable in 1:h){
+  statesNames=c(0,1)
+  transprob <- createSequenceMatrix(
+    sequence,
+    toRowProbs = TRUE,
+    sanitize = FALSE
+  )
+  if(length(transprob)!=1){
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                   nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM4[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainSIM4[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdSIM4[[y]] <- sum(mcprediction)
+      }
+    WillemainSIM4[[variable]] <- mean(ltdSIM4)
+    WillemainSDSIM4[[variable]] <- sd(ltdSIM4)
+    if(testSIM4[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqSIM4[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainSIM4[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdSIM4[[y]] <- sum(mcprediction)
+    }
+    WillemainSIM4[[variable]] <- mean(ltdSIM4)
+    WillemainSDSIM4[[variable]] <- sd(ltdSIM4)
+    if(testSIM4[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainSIM4 <- rbind(predictionWillemainSIM4,WillemainSIM4)  
+  }
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainSIM4 <- t(predictionWillemainSIM4)
+forecastwillemainSIM4 <- forecastwillemainSIM4[,-1]
+save(forecastwillemainSIM4,file="C:/users/chent/Downloads/forecastwillemainSIM4.Rda")
+
+meta_mse=  mean_squared_error(testSIM4, forecastwillemainSIM4)
+meta_rmse = np.sqrt(forecastwillemainSIM4)
+meta_mase = mean_absolute_error(test_demand,forecastwillemainSIM4 ) / np.mean(np.abs(np.diff(trainSIM4)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainSIM4)))
+
+
+
+####          Willemain MAN  ####
+h=45
+for(i in 1:ncol(seqMAN)){
+  leadtime <- 1
+  sequence <- seqMAN[[i]]
+  for (variable in 1:h){
+    statesNames=c(0,1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    if(length(transprob)!=1){
+      mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                     nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+        mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqMAN[[i]], n=1),include.t0 = FALSE))
+        nonzeroamount <- length(mcprediction[mcprediction != 0])
+        nonzeroes <- trainMAN[[i]]
+        mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+        mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+        ltdMAN[[y]] <- sum(mcprediction)
+      }
+      WillemainMAN[[variable]] <- mean(ltdMAN)
+      WillemainSDMAN[[variable]] <- sd(ltdMAN)
+      if(testMAN[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqMAN[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainMAN[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdMAN[[y]] <- sum(mcprediction)
+    }
+    WillemainMAN[[variable]] <- mean(ltdMAN)
+    WillemainSDMAN[[variable]] <- sd(ltdMAN)
+    if(testMAN[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainMAN <- rbind(predictionWillemainMAN,WillemainMAN)  
+}
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainMAN <- t(predictionWillemainMAN)
+forecastwillemainMAN <- forecastwillemainMAN[,-1]
+save(forecastwillemainMAN,file="C:/users/chent/Downloads/forecastwillemainMAN.Rda")
+meta_mse=  mean_squared_error(testMAN, forecastwillemainMAN)
+meta_rmse = np.sqrt(forecastwillemainMAN)
+meta_mase = mean_absolute_error(testMAN,forecastwillemainMAN ) / np.mean(np.abs(np.diff(trainMAN)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainMAN)))
+
+
+
+
+####          Willemain BRAF  ####
+h=25
+for(i in 1:ncol(seqBRAF)){
+  leadtime <- 1
+  sequence <- seqBRAF[[i]]
+  for (variable in 1:h){
+    statesNames=c(0,1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    if(length(transprob)!=1){
+      mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                     nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+        mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqBRAF[[i]], n=1),include.t0 = FALSE))
+        nonzeroamount <- length(mcprediction[mcprediction != 0])
+        nonzeroes <- trainBRAF[[i]]
+        mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+        mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+        ltdBRAF[[y]] <- sum(mcprediction)
+      }
+      WillemainBRAF[[variable]] <- mean(ltdBRAF)
+      WillemainSDBRAF[[variable]] <- sd(ltdBRAF)
+      if(testBRAF[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqBRAF[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainBRAF[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdBRAF[[y]] <- sum(mcprediction)
+    }
+    WillemainBRAF[[variable]] <- mean(ltdBRAF)
+    WillemainSDBRAF[[variable]] <- sd(ltdBRAF)
+    if(testBRAF[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainBRAF <- rbind(predictionWillemainBRAF,WillemainBRAF)  
+}
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainBRAF <- t(predictionWillemainBRAF)
+forecastwillemainBRAF <- forecastwillemainBRAF[,-1]
+save(forecastwillemainBRAF,file="C:/users/chent/Downloads/forecastwillemainBRAF.Rda")
+
+meta_mse=  mean_squared_error(testBRAF, forecastwillemainBRAF)
+meta_rmse = np.sqrt(forecastwillemainBRAF)
+meta_mase = mean_absolute_error(test_demand,forecastwillemainBRAF) / np.mean(np.abs(np.diff(trainBRAF)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainBRAF)))
+
+
+
+
+
+####          Willemain AUTO  ####
+
+h=7
+for(i in 1:ncol(seqAUTO)){
+  leadtime <- 1
+  sequence <- seqAUTO[[i]]
+  for (variable in 1:h){
+    statesNames=c(0,1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    if(length(transprob)!=1){
+      if(sum(transprob[1,])<1){
+      transprob[1,1] <- 0.5
+      transprob[1,2] <- 0.5
+    }
+      if(sum(transprob[2,])<1){
+        transprob[2,1] <- 0.5
+        transprob[2,2] <- 0.5
+      }
+      mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                     nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+        mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqAUTO[[i]], n=1),include.t0 = FALSE))
+        nonzeroamount <- length(mcprediction[mcprediction != 0])
+        nonzeroes <- trainAUTO[[i]]
+        mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+        mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+        ltdAUTO[[y]] <- sum(mcprediction)
+      }
+      WillemainAUTO[[variable]] <- mean(ltdAUTO)
+      WillemainSDAUTO[[variable]] <- sd(ltdAUTO)
+      if(testAUTO[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqAUTO[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainAUTO[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdAUTO[[y]] <- sum(mcprediction)
+    }
+    WillemainAUTO[[variable]] <- mean(ltdAUTO)
+    WillemainSDAUTO[[variable]] <- sd(ltdAUTO)
+    if(testAUTO[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainAUTO <- rbind(predictionWillemainAUTO,WillemainAUTO)  
+}
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainAUTO <- t(predictionWillemainAUTO)
+forecastwillemainAUTO <- forecastwillemainAUTO[,-1]
+save(forecastwillemainAUTO,file="C:/users/chent/Downloads/forecastwillemainAUTO.Rda")
+
+meta_mse=  mean_squared_error(testAUTO, forecastwillemainAUTO)
+meta_rmse = np.sqrt(forecastwillemainAUTO)
+meta_mase = mean_absolute_error(testAUTO,forecastwillemainAUTO) / np.mean(np.abs(np.diff(trainAUTO)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainAUTO)))
+
+
+
+
+
+####          Willemain OIL  ####
+
+h=15 # was 17
+for(i in 1:ncol(seqOIL)){
+  leadtime <- 1
+  sequence <- seqOIL[[i]]
+  for (variable in 1:h){
+    statesNames=c(0,1)
+    transprob <- createSequenceMatrix(
+      sequence,
+      toRowProbs = TRUE,
+      sanitize = FALSE
+    )
+    if(length(transprob)!=1){
+      if(sum(transprob[1,])<1){
+        transprob[1,1] <- 0.5
+        transprob[1,2] <- 0.5
+      }
+      if(sum(transprob[2,])<1){
+        transprob[2,1] <- 0.5
+        transprob[2,2] <- 0.5
+      }
+      mc<-new("markovchain", transitionMatrix=matrix((transprob),
+                                                     nrow=2, dimnames=list(statesNames,statesNames)))
+      for (y in 1:1000){
+        mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqOIL[[i]], n=1),include.t0 = FALSE))
+        nonzeroamount <- length(mcprediction[mcprediction != 0])
+        nonzeroes <- trainOIL[[i]]
+        mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+        mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+        ltdOIL[[y]] <- sum(mcprediction)
+      }
+      WillemainOIL[[variable]] <- mean(ltdOIL,na.rm=TRUE)
+      WillemainSDOIL[[variable]] <- sd(ltdOIL,na.rm=TRUE)
+      if(is.na(testOIL[variable,i])){testOIL[variable,i] <- 0}
+      if(testOIL[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    } else {statesNames=c(1)
+    mc<-new("markovchain", transitionMatrix=matrix((transprob),byrow=TRUE,
+                                                   nrow=1, dimnames=list(statesNames,statesNames)))
+    for (y in 1:1000){
+      mcprediction <- as.numeric(markovchainSequence(n=leadtime, markovchain=mc,t0 = tail(seqOIL[[i]], n=1),include.t0 = FALSE))
+      nonzeroamount <- length(mcprediction[mcprediction != 0])
+      nonzeroes <- trainOIL[[i]]
+      mcprediction[mcprediction != 0] <- sample(nonzeroes[nonzeroes != 0], size=nonzeroamount)
+      mcprediction[mcprediction != 0] <- 1 + round(mcprediction[mcprediction != 0] + rnorm(1)*sqrt(mcprediction[mcprediction != 0]))
+      ltdOIL[[y]] <- sum(mcprediction)
+    }
+    WillemainOIL[[variable]] <- mean(ltdOIL,na.rm=TRUE)
+    WillemainSDOIL[[variable]] <- sd(ltdOIL,na.rm=TRUE)
+    if(is.na(testOIL[variable,i])){testOIL[variable,i] <- 0}
+    if(testOIL[variable,i]>0){sequence <- c(sequence,2)}else{sequence <- c(sequence,1)}
+    }}
+  predictionWillemainOIL <- rbind(predictionWillemainOIL,WillemainOIL)  
+}
+
+
+# Saving the predictions without transposed and without column 1.
+forecastwillemainOIL <- t(predictionWillemainOIL)
+forecastwillemainOIL <- forecastwillemainOIL[,-1]
+save(forecastwillemainOIL,file="C:/users/chent/Downloads/forecastwillemainOIL.Rda")
+
+meta_mse=  mean_squared_error(testOIL, forecastwillemainOIL)
+meta_rmse = np.sqrt(forecastwillemainOIL)
+meta_mase = mean_absolute_error(testOIL,forecastwillemainOIL) / np.mean(np.abs(np.diff(trainOIL)))
+meta_rmsse = meta_rmse / np.mean(np.abs(np.diff(trainOIL)))
+
+
+
