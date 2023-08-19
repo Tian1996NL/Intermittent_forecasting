@@ -1,0 +1,255 @@
+import pandas as pd
+import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from itertools import product
+
+cleaned_Data = pyreadr.read_r("/Users/tianhaochen/Downloads/CleanedData.Rdata")
+
+
+# SIM1
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM1_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+data = cleaned_Data["SIM1"]
+demand = data.values
+
+train_demand = demand[:42]
+test_demand = demand[42:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+#SIM2
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM2_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+train_demand = demand[:42]
+test_demand = demand[42:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+#SIM3 
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM3_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+train_demand = demand[:42]
+test_demand = demand[42:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+#SIM4
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/SIM4_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+train_demand = demand[:42]
+test_demand = demand[42:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+
+# MAN
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/MAN_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+train_demand = demand[:105]
+test_demand = demand[105:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+
+# BRAF
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/BRAF_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+train_demand = demand[:59]
+test_demand = demand[59:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+#OIL
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/OIL_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+train_demand = demand[:40]
+test_demand = demand[40:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+#AUTO
+
+y_hat_array_croston_classic= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_Croston.csv')
+y_hat_array_croston_optimized= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_CrostonT.csv')
+y_hat_array_tsb=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_TSB.csv')
+y_hat_array_croston_sba= pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_SBA.csv')
+y_hat_array_croston_RNN=pd.read_csv('/Users/tianhaochen/Desktop/predictions/AUTO_RNN.csv')
+
+y_hat_array_croston_classic = y_hat_array_croston_classic.iloc[:, 1:].values
+y_hat_array_croston_optimized = y_hat_array_croston_optimized.iloc[:, 1:].values
+y_hat_array_tsb = y_hat_array_tsb.iloc[:, 1:].values
+y_hat_array_croston_sba=y_hat_array_croston_sba.iloc[:, 1:].values
+y_hat_array_croston_RNN=y_hat_array_croston_RNN.iloc[:, 1:].values
+
+
+train_demand = demand[:17]
+test_demand = demand[17:]
+
+ensembled_1=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba )/4 
+ensembled_2=(y_hat_array_tsb+ y_hat_array_croston_classic+y_hat_array_croston_optimized+y_hat_array_croston_sba+y_hat_array_croston_RNN )/5
+
+ensemble1_mse=  mean_squared_error(test_demand, ensembled_1)
+ensemble1_rmse = np.sqrt(ensemble1_mse)
+ensemble1_mase = mean_absolute_error(test_demand,ensemble_1 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble1_rmsse = ensemble1_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+ensemble2_mse=  mean_squared_error(test_demand, ensembled_2)
+ensemble2_rmse = np.sqrt(ensemble2_mse)
+ensemble2_mase = mean_absolute_error(test_demand,ensemble_2 ) / np.mean(np.abs(np.diff(train_demand)))
+ensemble2_rmsse = ensemble2_rmse/ np.mean(np.abs(np.diff(train_demand)))
+
+
