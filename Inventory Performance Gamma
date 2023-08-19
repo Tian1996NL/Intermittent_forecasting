@@ -1,0 +1,656 @@
+load("/Users/tianhaochen/Downloads/CleanedData.RData")
+library(readr)
+
+# Loading predictions
+croston_ SIM1 <- read_csv("/Users/tianhaochen/Desktop/predictions/ SIM1_Croston.csv")
+Croston_ SIM1 <-croston_ SIM1[,-1]
+Croston_ SIM1 <- as.data.frame(Croston_ SIM1)
+SIM1_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_META.csv')
+SIM1_META_1<- SIM1_META_1[,-1]
+SIM1_META_1 <- as.data.frame( SIM1_META_1)
+SIM1_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_CrostonT.csv')
+SIM1_CrostonT<- SIM1_CrostonT[,-1]
+SIM1_CrostonT <- as.data.frame( SIM1_CrostonT)
+SIM1_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_TSB.csv')
+SIM1_TSB<- SIM1_TSB[,-1]
+SIM1_TSB <- as.data.frame( SIM1_TSB)
+SIM1_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_SBA.csv')
+SIM1_SBA<- SIM1_SBA[,-1]
+SIM1_SBA <- as.data.frame( SIM1_SBA)
+SIM1_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_RNN.csv')
+SIM1_RNN<- SIM1_RNN[,-1]
+SIM1_RNN <- as.data.frame( SIM1_RNN)
+SIM1_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_LSTM.csv')
+SIM1_LSTM<- SIM1_LSTM[,-1]
+SIM1_LSTM <- as.data.frame( SIM1_LSTM)
+SIM1_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_ESRNN.csv')
+SIM1_ESRNN<- SIM1_ESRNN[,-1]
+SIM1_ESRNN <- as.data.frame( SIM1_ESRNN)
+SIM1_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_META_2.csv')
+SIM1_META_2<- SIM1_META_2[,-1]
+SIM1_META_2<- as.data.frame( SIM1_META_2)
+SIM1_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_EN_1.csv')
+SIM1_EN_1<- SIM1_EN_1[,-1]
+SIM1_EN_1<- as.data.frame( SIM1_EN_1)
+SIM1_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM1_EN_2.csv')
+SIM1_EN_2<- SIM1_EN_2[,-1]
+SIM1_EN_2<- as.data.frame( SIM1_EN_2)
+SIM1_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain SIM1.Rda')
+SIM1_Willemain<-forecastwillemain SIM1
+SIM1_Willemain<-  SIM1_Willemain[,-1]
+SIM1_Willemain<- as.data.frame( SIM1_Willemain)
+# SIM2
+croston_ SIM2 <- read_csv("/Users/tianhaochen/Desktop/predictions/ SIM2_Croston.csv")
+Croston_ SIM2 <-croston_ SIM2[,-1]
+Croston_ SIM2 <- as.data.frame(Croston_ SIM2)
+SIM2_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_META.csv')
+SIM2_META_1<- SIM2_META_1[,-1]
+SIM2_META_1 <- as.data.frame( SIM2_META_1)
+SIM2_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_CrostonT.csv')
+SIM2_CrostonT<- SIM2_CrostonT[,-1]
+SIM2_CrostonT <- as.data.frame( SIM2_CrostonT)
+SIM2_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_TSB.csv')
+SIM2_TSB<- SIM2_TSB[,-1]
+SIM2_TSB <- as.data.frame( SIM2_TSB)
+SIM2_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_SBA.csv')
+SIM2_SBA<- SIM2_SBA[,-1]
+SIM2_SBA <- as.data.frame( SIM2_SBA)
+SIM2_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_RNN.csv')
+SIM2_RNN<- SIM2_RNN[,-1]
+SIM2_RNN <- as.data.frame( SIM2_RNN)
+SIM2_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_LSTM.csv')
+SIM2_LSTM<- SIM2_LSTM[,-1]
+SIM2_LSTM <- as.data.frame( SIM2_LSTM)
+SIM2_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_ESRNN.csv')
+SIM2_ESRNN<- SIM2_ESRNN[,-1]
+SIM2_ESRNN <- as.data.frame( SIM2_ESRNN)
+SIM2_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_META_2.csv')
+SIM2_META_2<- SIM2_META_2[,-1]
+SIM2_META_2<- as.data.frame( SIM2_META_2)
+SIM2_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_EN_1.csv')
+SIM2_EN_1<- SIM2_EN_1[,-1]
+SIM2_EN_1<- as.data.frame( SIM2_EN_1)
+SIM2_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM2_EN_2.csv')
+SIM2_EN_2<- SIM2_EN_2[,-1]
+SIM2_EN_2<- as.data.frame( SIM2_EN_2)
+SIM2_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain SIM2.Rda')
+SIM2_Willemain<-forecastwillemain SIM2
+SIM2_Willemain<-  SIM2_Willemain[,-1]
+SIM2_Willemain<- as.data.frame( SIM2_Willemain)
+
+#SIM3
+croston_ SIM3 <- read_csv("/Users/tianhaochen/Desktop/predictions/ SIM3_Croston.csv")
+Croston_ SIM3 <-croston_ SIM3[,-1]
+Croston_ SIM3 <- as.data.frame(Croston_ SIM3)
+SIM3_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_META.csv')
+SIM3_META_1<- SIM3_META_1[,-1]
+SIM3_META_1 <- as.data.frame( SIM3_META_1)
+SIM3_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_CrostonT.csv')
+SIM3_CrostonT<- SIM3_CrostonT[,-1]
+SIM3_CrostonT <- as.data.frame( SIM3_CrostonT)
+SIM3_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_TSB.csv')
+SIM3_TSB<- SIM3_TSB[,-1]
+SIM3_TSB <- as.data.frame( SIM3_TSB)
+SIM3_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_SBA.csv')
+SIM3_SBA<- SIM3_SBA[,-1]
+SIM3_SBA <- as.data.frame( SIM3_SBA)
+SIM3_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_RNN.csv')
+SIM3_RNN<- SIM3_RNN[,-1]
+SIM3_RNN <- as.data.frame( SIM3_RNN)
+SIM3_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_LSTM.csv')
+SIM3_LSTM<- SIM3_LSTM[,-1]
+SIM3_LSTM <- as.data.frame( SIM3_LSTM)
+SIM3_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_ESRNN.csv')
+SIM3_ESRNN<- SIM3_ESRNN[,-1]
+SIM3_ESRNN <- as.data.frame( SIM3_ESRNN)
+SIM3_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_META_2.csv')
+SIM3_META_2<- SIM3_META_2[,-1]
+SIM3_META_2<- as.data.frame( SIM3_META_2)
+SIM3_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_EN_1.csv')
+SIM3_EN_1<- SIM3_EN_1[,-1]
+SIM3_EN_1<- as.data.frame( SIM3_EN_1)
+SIM3_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM3_EN_2.csv')
+SIM3_EN_2<- SIM3_EN_2[,-1]
+SIM3_EN_2<- as.data.frame( SIM3_EN_2)
+SIM3_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain SIM3.Rda')
+SIM3_Willemain<-forecastwillemain SIM3
+SIM3_Willemain<-  SIM3_Willemain[,-1]
+SIM3_Willemain<- as.data.frame( SIM3_Willemain)
+
+#SIM4
+croston_ SIM4 <- read_csv("/Users/tianhaochen/Desktop/predictions/ SIM4_Croston.csv")
+Croston_ SIM4 <-croston_ SIM4[,-1]
+Croston_ SIM4 <- as.data.frame(Croston_ SIM4)
+SIM4_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_META.csv')
+SIM4_META_1<- SIM4_META_1[,-1]
+SIM4_META_1 <- as.data.frame( SIM4_META_1)
+SIM4_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_CrostonT.csv')
+SIM4_CrostonT<- SIM4_CrostonT[,-1]
+SIM4_CrostonT <- as.data.frame( SIM4_CrostonT)
+SIM4_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_TSB.csv')
+SIM4_TSB<- SIM4_TSB[,-1]
+SIM4_TSB <- as.data.frame( SIM4_TSB)
+SIM4_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_SBA.csv')
+SIM4_SBA<- SIM4_SBA[,-1]
+SIM4_SBA <- as.data.frame( SIM4_SBA)
+SIM4_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_RNN.csv')
+SIM4_RNN<- SIM4_RNN[,-1]
+SIM4_RNN <- as.data.frame( SIM4_RNN)
+SIM4_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_LSTM.csv')
+SIM4_LSTM<- SIM4_LSTM[,-1]
+SIM4_LSTM <- as.data.frame( SIM4_LSTM)
+SIM4_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_ESRNN.csv')
+SIM4_ESRNN<- SIM4_ESRNN[,-1]
+SIM4_ESRNN <- as.data.frame( SIM4_ESRNN)
+SIM4_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_META_2.csv')
+SIM4_META_2<- SIM4_META_2[,-1]
+SIM4_META_2<- as.data.frame( SIM4_META_2)
+SIM4_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_EN_1.csv')
+SIM4_EN_1<- SIM4_EN_1[,-1]
+SIM4_EN_1<- as.data.frame( SIM4_EN_1)
+SIM4_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ SIM4_EN_2.csv')
+SIM4_EN_2<- SIM4_EN_2[,-1]
+SIM4_EN_2<- as.data.frame( SIM4_EN_2)
+SIM4_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain SIM4.Rda')
+SIM4_Willemain<-forecastwillemain SIM4
+SIM4_Willemain<-  SIM4_Willemain[,-1]
+SIM4_Willemain<- as.data.frame( SIM4_Willemain)
+
+#MAN
+croston_ MAN <- read_csv("/Users/tianhaochen/Desktop/predictions/ MAN_Croston.csv")
+Croston_ MAN <-croston_ MAN[,-1]
+Croston_ MAN <- as.data.frame(Croston_ MAN)
+MAN_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_META.csv')
+MAN_META_1<- MAN_META_1[,-1]
+MAN_META_1 <- as.data.frame( MAN_META_1)
+MAN_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_CrostonT.csv')
+MAN_CrostonT<- MAN_CrostonT[,-1]
+MAN_CrostonT <- as.data.frame( MAN_CrostonT)
+MAN_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_TSB.csv')
+MAN_TSB<- MAN_TSB[,-1]
+MAN_TSB <- as.data.frame( MAN_TSB)
+MAN_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_SBA.csv')
+MAN_SBA<- MAN_SBA[,-1]
+MAN_SBA <- as.data.frame( MAN_SBA)
+MAN_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_RNN.csv')
+MAN_RNN<- MAN_RNN[,-1]
+MAN_RNN <- as.data.frame( MAN_RNN)
+MAN_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_LSTM.csv')
+MAN_LSTM<- MAN_LSTM[,-1]
+MAN_LSTM <- as.data.frame( MAN_LSTM)
+MAN_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_ESRNN.csv')
+MAN_ESRNN<- MAN_ESRNN[,-1]
+MAN_ESRNN <- as.data.frame( MAN_ESRNN)
+MAN_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_META_2.csv')
+MAN_META_2<- MAN_META_2[,-1]
+MAN_META_2<- as.data.frame( MAN_META_2)
+MAN_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_EN_1.csv')
+MAN_EN_1<- MAN_EN_1[,-1]
+MAN_EN_1<- as.data.frame( MAN_EN_1)
+MAN_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ MAN_EN_2.csv')
+MAN_EN_2<- MAN_EN_2[,-1]
+MAN_EN_2<- as.data.frame( MAN_EN_2)
+MAN_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain MAN.Rda')
+MAN_Willemain<-forecastwillemain MAN
+MAN_Willemain<-  MAN_Willemain[,-1]
+MAN_Willemain<- as.data.frame( MAN_Willemain)
+
+#BRAF
+croston_ BRAF <- read_csv("/Users/tianhaochen/Desktop/predictions/ BRAF_Croston.csv")
+Croston_ BRAF <-croston_ BRAF[,-1]
+Croston_ BRAF <- as.data.frame(Croston_ BRAF)
+BRAF_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_META.csv')
+BRAF_META_1<- BRAF_META_1[,-1]
+BRAF_META_1 <- as.data.frame( BRAF_META_1)
+BRAF_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_CrostonT.csv')
+BRAF_CrostonT<- BRAF_CrostonT[,-1]
+BRAF_CrostonT <- as.data.frame( BRAF_CrostonT)
+BRAF_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_TSB.csv')
+BRAF_TSB<- BRAF_TSB[,-1]
+BRAF_TSB <- as.data.frame( BRAF_TSB)
+BRAF_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_SBA.csv')
+BRAF_SBA<- BRAF_SBA[,-1]
+BRAF_SBA <- as.data.frame( BRAF_SBA)
+BRAF_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_RNN.csv')
+BRAF_RNN<- BRAF_RNN[,-1]
+BRAF_RNN <- as.data.frame( BRAF_RNN)
+BRAF_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_LSTM.csv')
+BRAF_LSTM<- BRAF_LSTM[,-1]
+BRAF_LSTM <- as.data.frame( BRAF_LSTM)
+BRAF_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_ESRNN.csv')
+BRAF_ESRNN<- BRAF_ESRNN[,-1]
+BRAF_ESRNN <- as.data.frame( BRAF_ESRNN)
+BRAF_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_META_2.csv')
+BRAF_META_2<- BRAF_META_2[,-1]
+BRAF_META_2<- as.data.frame( BRAF_META_2)
+BRAF_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_EN_1.csv')
+BRAF_EN_1<- BRAF_EN_1[,-1]
+BRAF_EN_1<- as.data.frame( BRAF_EN_1)
+BRAF_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ BRAF_EN_2.csv')
+BRAF_EN_2<- BRAF_EN_2[,-1]
+BRAF_EN_2<- as.data.frame( BRAF_EN_2)
+BRAF_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain BRAF.Rda')
+BRAF_Willemain<-forecastwillemain BRAF
+BRAF_Willemain<-  BRAF_Willemain[,-1]
+BRAF_Willemain<- as.data.frame( BRAF_Willemain)
+
+#OIL
+
+croston_ OIL <- read_csv("/Users/tianhaochen/Desktop/predictions/ OIL_Croston.csv")
+Croston_ OIL <-croston_ OIL[,-1]
+Croston_ OIL <- as.data.frame(Croston_ OIL)
+OIL_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_META.csv')
+OIL_META_1<- OIL_META_1[,-1]
+OIL_META_1 <- as.data.frame( OIL_META_1)
+OIL_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_CrostonT.csv')
+OIL_CrostonT<- OIL_CrostonT[,-1]
+OIL_CrostonT <- as.data.frame( OIL_CrostonT)
+OIL_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_TSB.csv')
+OIL_TSB<- OIL_TSB[,-1]
+OIL_TSB <- as.data.frame( OIL_TSB)
+OIL_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_SBA.csv')
+OIL_SBA<- OIL_SBA[,-1]
+OIL_SBA <- as.data.frame( OIL_SBA)
+OIL_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_RNN.csv')
+OIL_RNN<- OIL_RNN[,-1]
+OIL_RNN <- as.data.frame( OIL_RNN)
+OIL_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_LSTM.csv')
+OIL_LSTM<- OIL_LSTM[,-1]
+OIL_LSTM <- as.data.frame( OIL_LSTM)
+OIL_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_ESRNN.csv')
+OIL_ESRNN<- OIL_ESRNN[,-1]
+OIL_ESRNN <- as.data.frame( OIL_ESRNN)
+OIL_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_META_2.csv')
+OIL_META_2<- OIL_META_2[,-1]
+OIL_META_2<- as.data.frame( OIL_META_2)
+OIL_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_EN_1.csv')
+OIL_EN_1<- OIL_EN_1[,-1]
+OIL_EN_1<- as.data.frame( OIL_EN_1)
+OIL_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ OIL_EN_2.csv')
+OIL_EN_2<- OIL_EN_2[,-1]
+OIL_EN_2<- as.data.frame( OIL_EN_2)
+OIL_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain OIL.Rda')
+OIL_Willemain<-forecastwillemain OIL
+OIL_Willemain<-  OIL_Willemain[,-1]
+OIL_Willemain<- as.data.frame( OIL_Willemain)
+
+#AUTO
+croston_ AUTO <- read_csv("/Users/tianhaochen/Desktop/predictions/ AUTO_Croston.csv")
+Croston_ AUTO <-croston_ AUTO[,-1]
+Croston_ AUTO <- as.data.frame(Croston_ AUTO)
+AUTO_META_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_META.csv')
+AUTO_META_1<- AUTO_META_1[,-1]
+AUTO_META_1 <- as.data.frame( AUTO_META_1)
+AUTO_CrostonT<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_CrostonT.csv')
+AUTO_CrostonT<- AUTO_CrostonT[,-1]
+AUTO_CrostonT <- as.data.frame( AUTO_CrostonT)
+AUTO_TSB<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_TSB.csv')
+AUTO_TSB<- AUTO_TSB[,-1]
+AUTO_TSB <- as.data.frame( AUTO_TSB)
+AUTO_SBA<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_SBA.csv')
+AUTO_SBA<- AUTO_SBA[,-1]
+AUTO_SBA <- as.data.frame( AUTO_SBA)
+AUTO_RNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_RNN.csv')
+AUTO_RNN<- AUTO_RNN[,-1]
+AUTO_RNN <- as.data.frame( AUTO_RNN)
+AUTO_LSTM<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_LSTM.csv')
+AUTO_LSTM<- AUTO_LSTM[,-1]
+AUTO_LSTM <- as.data.frame( AUTO_LSTM)
+AUTO_ESRNN<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_ESRNN.csv')
+AUTO_ESRNN<- AUTO_ESRNN[,-1]
+AUTO_ESRNN <- as.data.frame( AUTO_ESRNN)
+AUTO_META_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_META_2.csv')
+AUTO_META_2<- AUTO_META_2[,-1]
+AUTO_META_2<- as.data.frame( AUTO_META_2)
+AUTO_EN_1<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_EN_1.csv')
+AUTO_EN_1<- AUTO_EN_1[,-1]
+AUTO_EN_1<- as.data.frame( AUTO_EN_1)
+AUTO_EN_2<-read_csv('/Users/tianhaochen/Desktop/predictions/ AUTO_EN_2.csv')
+AUTO_EN_2<- AUTO_EN_2[,-1]
+AUTO_EN_2<- as.data.frame( AUTO_EN_2)
+AUTO_Willemain<-load('/Users/tianhaochen/Downloads/forecastwillemain AUTO.Rda')
+AUTO_Willemain<-forecastwillemain AUTO
+AUTO_Willemain<-  AUTO_Willemain[,-1]
+AUTO_Willemain<- as.data.frame( AUTO_Willemain)
+
+
+
+#Retrieved from https://github.com/KhueNguyenTK/Spare-Part-Demand-Forecasting
+
+targetFillRates <- c(75:99)
+targetFillRates <- targetFillRates / 100
+nTFR <- length(targetFillRates)
+
+
+ESC_GAMMA <- function(k, alpha, R) {
+  ESC = k/alpha - R - k/alpha * pgamma(alpha*R, k+1, 1) + R * pgamma(alpha*R, k, 1)
+  return(ESC)
+}
+
+IPM_GAMMA <- function(data, train_data, test_data, predictions, prices, data_name, Method) {
+  # Containing fill rate for each item for each TFR (col ~ item, row ~ TFR)
+  # Each entry = total supply / total demand of an item for a TFR
+  FillRates <- as.data.frame(matrix(ncol = ncol(test_data), nrow = nTFR))
+  colnames(FillRates) <- colnames(data)
+  rownames(FillRates) <- targetFillRates
+  
+  # Containing total supply for each item for each TFR (col ~ item, row ~ TFR)
+  TotalSupply <- as.data.frame(matrix(ncol = ncol(test_data), nrow = nTFR))
+  colnames(TotalSupply) <- colnames(data)
+  rownames(TotalSupply) <- targetFillRates
+  
+  # Containing total demand for each item
+  TotalDemand <- colSums(test_data)
+  
+  # Containing average holding cost for each item for each TFR (col ~ item, row ~ TFR)
+  HoldingCosts <- as.data.frame(matrix(ncol = ncol(test_data), nrow = nTFR))
+  colnames(HoldingCosts) <- colnames(data)
+  rownames(HoldingCosts) <- targetFillRates
+  
+  t = nrow(train_data)
+  h = nrow(test_data)
+  
+  for (i in 1:ncol(test_data)) {
+    for (j in 1:nTFR) {
+      r <- targetFillRates[j]
+      inventory <- data.frame(TFR = rep(r, length = h), Sigma = NA, Mu = NA, K = NA, Lambda = NA,
+                              R = NA, Q = NA, ILpreD = NA, D = NA, S = NA, ILpostD = NA, Cost = NA)
+      inventory$D <- rep(test_data[,i])
+      for (k in 1:h) {
+        inventory$Sigma[k] <- sd(data[1:(t+k-1),i])
+      }
+      inventory$Mu <- predictions[,i]
+      inventory$K      <- inventory$Mu^2 / inventory$Sigma^2   # shape
+      inventory$Lambda <- inventory$Sigma^2 / inventory$Mu     # scale
+      alpha  <- 1 / inventory$Lambda                           # rate
+      
+      for (g in 1:h) {
+        if (inventory$Mu[g] <= 0) {
+          inventory$R[g] <- 0
+          next
+        }
+        maxR <- round(max(data[1:(t+g-1),i]))
+        R <- 0
+        lossTarget <- (1 - r) * inventory$Mu[g]
+        tempQ <- inventory$Mu[g]
+        shortagePerCycle <- ESC_GAMMA(inventory$K[g], alpha[g], R) #- ESC_GAMMA(inventory$K[g], alpha[g], R + tempQ)
+        while (shortagePerCycle > lossTarget) {
+          R <- R + 1
+          if (R == maxR) {
+            break
+          }
+          shortagePerCycle <- ESC_GAMMA(inventory$K[g], alpha[g], R) #- ESC_GAMMA(inventory$K[g], alpha[g], R + tempQ)
+        }
+        inventory$R[g] <- R
+      }
+      
+      inventory$Q[1] <- 0                              # Initial order quantity
+      inventory$ILpreD[1] <- inventory$R[1]
+      inventory$S[1] <- min(inventory$ILpreD[1], inventory$D[1])
+      inventory$ILpostD[1] <- inventory$ILpreD[1] - inventory$D[1]
+      
+      for (g in 2:h) {
+        inventory$Q[g] <- max(0, inventory$R[g] - inventory$ILpostD[g-1])
+        inventory$ILpreD[g] <- max(inventory$ILpostD[g-1], inventory$R[g])
+        inventory$S[g] <- min(inventory$ILpreD[g], inventory$D[g])
+        inventory$ILpostD[g] <- inventory$ILpreD[g] - inventory$D[g]
+      }
+      
+      Cost <- 0.25 * inventory$ILpreD * prices[i]
+      Cost[Cost < 0] <- 0
+      inventory$Cost <- Cost
+      
+      if (TotalDemand[i] == 0) {
+        FillRates[j,i] <- 0
+      } else {
+        FillRates[j,i] <- sum(inventory$S) / sum(inventory$D)
+      }
+      TotalSupply[j,i] <- sum(inventory$S)
+      HoldingCosts[j,i] <- mean(inventory$Cost)
+    } 
+    print(paste("Done", i))
+  } 
+  
+  totalAFR <- rowSums(TotalSupply) / sum(TotalDemand)
+  avgAFR <- rowMeans(FillRates)
+  
+  holdingCost <- rowSums(HoldingCosts)
+  
+  ServiceLevel <- data.frame(avgAFR, totalAFR, holdingCost, targetFillRates, Method)
+  colnames(ServiceLevel) <- c("AchievedFillRates_Avg", "AchievedFillRates_Total", "HoldingCosts", "TargetFillRates", "Method")
+}
+#------------------------------------------------------------------------------------
+# Executing
+
+#SIM1
+Croston_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, Croston_SIM1, pricesSIM1, "SIM1" , "Croston")
+Croston_Tuned_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_CrostonT , pricesSIM1, "SIM1" , "Croston Tuned")
+TSB_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_TSB, pricesSIM1, "SIM1" , "TSB")
+SBA_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_TSB, pricesSIM1, "SIM1" , "SBA")
+RNN_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_RNN, pricesSIM1, "SIM1" , "RNN")
+LSTM_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_LSTM, pricesSIM1, "SIM1" , "LSTM")
+ESRNN_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_ESRNN, pricesSIM1, "SIM1" , "ESRNN")
+META1_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_META_1, pricesSIM1, "SIM1" , "META-1")
+META2_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_META_2, pricesSIM1, "SIM1" , "META-2")
+EN1_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_EN_1, pricesSIM1, "SIM1" , "EN-1")
+EN2_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_EN_2, pricesSIM1, "SIM1" , "EN-2")
+WILLEMAIN_GAMMA_SIM1 <- IPM_GAMMA(SIM1, trainSIM1, testSIM1, SIM1_Willemain, pricesSIM1, "SIM1" , "WILLEMAIN")
+META2_IPM_GAMMA_SIM1 <- IPM_GAMMA(SIM11, trainSIM11, testSIM11, SIM11_META_1, pricesSIM1, "SIM1" , "META-1")
+
+write.csv(META1_IPM_GAMMA_SIM1 , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM1 .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_SIM1 , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_SIM1, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM1.csv", row.names=FALSE)
+
+#SIM2
+Croston_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, Croston_SIM2, pricesSIM2, "SIM2" , "Croston")
+Croston_Tuned_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_CrostonT , pricesSIM2, "SIM2" , "Croston Tuned")
+TSB_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_TSB, pricesSIM2, "SIM2" , "TSB")
+SBA_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_TSB, pricesSIM2, "SIM2" , "SBA")
+RNN_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_RNN, pricesSIM2, "SIM2" , "RNN")
+LSTM_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_LSTM, pricesSIM2, "SIM2" , "LSTM")
+ESRNN_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_ESRNN, pricesSIM2, "SIM2" , "ESRNN")
+META1_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_META_1, pricesSIM2, "SIM2" , "META-1")
+META2_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_META_2, pricesSIM2, "SIM2" , "META-2")
+EN1_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_EN_1, pricesSIM2, "SIM2" , "EN-1")
+EN2_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_EN_2, pricesSIM2, "SIM2" , "EN-2")
+WILLEMAIN_GAMMA_SIM2 <- IPM_GAMMA(SIM2, trainSIM2, testSIM2, SIM2_Willemain, pricesSIM2, "SIM2" , "WILLEMAIN")
+META2_IPM_GAMMA_SIM2 <- IPM_GAMMA(SIM21, trainSIM21, testSIM21, SIM21_META_1, pricesSIM2, "SIM2" , "META-1")
+
+write.csv(META1_IPM_GAMMA_SIM2 , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM2 .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_SIM2 , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_SIM2, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM2.csv", row.names=FALSE)
+
+#SIM3
+Croston_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, Croston_SIM3, pricesSIM3, "SIM3" , "Croston")
+Croston_Tuned_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_CrostonT , pricesSIM3, "SIM3" , "Croston Tuned")
+TSB_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_TSB, pricesSIM3, "SIM3" , "TSB")
+SBA_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_TSB, pricesSIM3, "SIM3" , "SBA")
+RNN_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_RNN, pricesSIM3, "SIM3" , "RNN")
+LSTM_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_LSTM, pricesSIM3, "SIM3" , "LSTM")
+ESRNN_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_ESRNN, pricesSIM3, "SIM3" , "ESRNN")
+META1_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_META_1, pricesSIM3, "SIM3" , "META-1")
+META2_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_META_2, pricesSIM3, "SIM3" , "META-2")
+EN1_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_EN_1, pricesSIM3, "SIM3" , "EN-1")
+EN2_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_EN_2, pricesSIM3, "SIM3" , "EN-2")
+WILLEMAIN_GAMMA_SIM3 <- IPM_GAMMA(SIM3, trainSIM3, testSIM3, SIM3_Willemain, pricesSIM3, "SIM3" , "WILLEMAIN")
+META2_IPM_GAMMA_SIM3 <- IPM_GAMMA(SIM31, trainSIM31, testSIM31, SIM31_META_1, pricesSIM3, "SIM3" , "META-1")
+
+write.csv(META1_IPM_GAMMA_SIM3 , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM3 .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_SIM3 , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_SIM3, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM3.csv", row.names=FALSE)
+
+#SIM4
+Croston_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, Croston_SIM4, pricesSIM4, "SIM4" , "Croston")
+Croston_Tuned_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_CrostonT , pricesSIM4, "SIM4" , "Croston Tuned")
+TSB_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_TSB, pricesSIM4, "SIM4" , "TSB")
+SBA_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_TSB, pricesSIM4, "SIM4" , "SBA")
+RNN_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_RNN, pricesSIM4, "SIM4" , "RNN")
+LSTM_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_LSTM, pricesSIM4, "SIM4" , "LSTM")
+ESRNN_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_ESRNN, pricesSIM4, "SIM4" , "ESRNN")
+META1_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_META_1, pricesSIM4, "SIM4" , "META-1")
+META2_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_META_2, pricesSIM4, "SIM4" , "META-2")
+EN1_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_EN_1, pricesSIM4, "SIM4" , "EN-1")
+EN2_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_EN_2, pricesSIM4, "SIM4" , "EN-2")
+WILLEMAIN_GAMMA_SIM4 <- IPM_GAMMA(SIM4, trainSIM4, testSIM4, SIM4_Willemain, pricesSIM4, "SIM4" , "WILLEMAIN")
+META2_IPM_GAMMA_SIM4 <- IPM_GAMMA(SIM41, trainSIM41, testSIM41, SIM41_META_1, pricesSIM4, "SIM4" , "META-1")
+
+write.csv(META1_IPM_GAMMA_SIM4 , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_SIM4 .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_SIM4 , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_SIM4, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_SIM4.csv", row.names=FALSE)
+
+#MAN
+Croston_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, Croston_MAN, pricesMAN, "MAN" , "Croston")
+Croston_Tuned_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_CrostonT , pricesMAN, "MAN" , "Croston Tuned")
+TSB_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_TSB, pricesMAN, "MAN" , "TSB")
+SBA_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_TSB, pricesMAN, "MAN" , "SBA")
+RNN_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_RNN, pricesMAN, "MAN" , "RNN")
+LSTM_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_LSTM, pricesMAN, "MAN" , "LSTM")
+ESRNN_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_ESRNN, pricesMAN, "MAN" , "ESRNN")
+META1_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_META_1, pricesMAN, "MAN" , "META-1")
+META2_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_META_2, pricesMAN, "MAN" , "META-2")
+EN1_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_EN_1, pricesMAN, "MAN" , "EN-1")
+EN2_IPM_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_EN_2, pricesMAN, "MAN" , "EN-2")
+WILLEMAIN_GAMMA_MAN <- IPM_GAMMA(MAN, trainMAN, testMAN, MAN_Willemain, pricesMAN, "MAN" , "WILLEMAIN")
+META2_IPM_GAMMA_MAN <- IPM_GAMMA(MAN1, trainMAN1, testMAN1, MAN1_META_1, pricesMAN, "MAN" , "META-1")
+
+write.csv(META1_IPM_GAMMA_MAN , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_MAN .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_MAN , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_MAN.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_MAN, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_MAN.csv", row.names=FALSE)
+
+#BRAF
+Croston_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, Croston_BRAF, pricesBRAF, "BRAF" , "Croston")
+Croston_Tuned_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_CrostonT , pricesBRAF, "BRAF" , "Croston Tuned")
+TSB_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_TSB, pricesBRAF, "BRAF" , "TSB")
+SBA_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_TSB, pricesBRAF, "BRAF" , "SBA")
+RNN_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_RNN, pricesBRAF, "BRAF" , "RNN")
+LSTM_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_LSTM, pricesBRAF, "BRAF" , "LSTM")
+ESRNN_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_ESRNN, pricesBRAF, "BRAF" , "ESRNN")
+META1_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_META_1, pricesBRAF, "BRAF" , "META-1")
+META2_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_META_2, pricesBRAF, "BRAF" , "META-2")
+EN1_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_EN_1, pricesBRAF, "BRAF" , "EN-1")
+EN2_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_EN_2, pricesBRAF, "BRAF" , "EN-2")
+WILLEMAIN_GAMMA_BRAF <- IPM_GAMMA(BRAF, trainBRAF, testBRAF, BRAF_Willemain, pricesBRAF, "BRAF" , "WILLEMAIN")
+META2_IPM_GAMMA_BRAF <- IPM_GAMMA(BRAF1, trainBRAF1, testBRAF1, BRAF1_META_1, pricesBRAF, "BRAF" , "META-1")
+
+write.csv(META1_IPM_GAMMA_BRAF , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_BRAF .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_BRAF , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_BRAF, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_BRAF.csv", row.names=FALSE)
+
+#OIL (differnt tranOIL and testOIL (40 timestamps in train and 15 in test data) 
+Croston_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, Croston_OIL, pricesOIL, "OIL" , "Croston")
+Croston_Tuned_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_CrostonT , pricesOIL, "OIL" , "Croston Tuned")
+TSB_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_TSB, pricesOIL, "OIL" , "TSB")
+SBA_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_TSB, pricesOIL, "OIL" , "SBA")
+RNN_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_RNN, pricesOIL, "OIL" , "RNN")
+LSTM_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_LSTM, pricesOIL, "OIL" , "LSTM")
+ESRNN_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_ESRNN, pricesOIL, "OIL" , "ESRNN")
+META1_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_META_1, pricesOIL, "OIL" , "META-1")
+META2_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_META_2, pricesOIL, "OIL" , "META-2")
+EN1_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_EN_1, pricesOIL, "OIL" , "EN-1")
+EN2_IPM_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_EN_2, pricesOIL, "OIL" , "EN-2")
+WILLEMAIN_GAMMA_OIL <- IPM_GAMMA(OIL, trainOIL, testOIL, OIL_Willemain, pricesOIL, "OIL" , "WILLEMAIN")
+META2_IPM_GAMMA_OIL <- IPM_GAMMA(OIL1, trainOIL1, testOIL1, OIL1_META_1, pricesOIL, "OIL" , "META-1")
+
+write.csv(META1_IPM_GAMMA_OIL , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_OIL .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_OIL , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_OIL.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_OIL, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_OIL.csv", row.names=FALSE)
+
+#AUTO
+Croston_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, Croston_AUTO, pricesAUTO, "AUTO" , "Croston")
+Croston_Tuned_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_CrostonT , pricesAUTO, "AUTO" , "Croston Tuned")
+TSB_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_TSB, pricesAUTO, "AUTO" , "TSB")
+SBA_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_TSB, pricesAUTO, "AUTO" , "SBA")
+RNN_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_RNN, pricesAUTO, "AUTO" , "RNN")
+LSTM_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_LSTM, pricesAUTO, "AUTO" , "LSTM")
+ESRNN_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_ESRNN, pricesAUTO, "AUTO" , "ESRNN")
+META1_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_META_1, pricesAUTO, "AUTO" , "META-1")
+META2_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_META_2, pricesAUTO, "AUTO" , "META-2")
+EN1_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_EN_1, pricesAUTO, "AUTO" , "EN-1")
+EN2_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_EN_2, pricesAUTO, "AUTO" , "EN-2")
+WILLEMAIN_GAMMA_AUTO <- IPM_GAMMA(AUTO, trainAUTO, testAUTO, AUTO_Willemain, pricesAUTO, "AUTO" , "WILLEMAIN")
+META2_IPM_GAMMA_AUTO <- IPM_GAMMA(AUTO1, trainAUTO1, testAUTO1, AUTO1_META_1, pricesAUTO, "AUTO" , "META-1")
+
+write.csv(META1_IPM_GAMMA_AUTO , "/Users/tianhaochen/Downloads/META1_IPM_GAMMA_AUTO .csv", row.names=FALSE)
+write.csv(Croston_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/Croston_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(Croston_Tuned_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/Croston_Tuned_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(TSB_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/TSB_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(SBA_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/SBA_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(RNN_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/RNN_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(LSTM_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/LSTM_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(ESRNN_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/ESRNN_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(WILLEMAIN_GAMMA_AUTO , "/Users/tianhaochen/Downloads/WILLEMAIN_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(META2_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/META2_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(EN1_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/EN1_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+write.csv(EN2_IPM_GAMMA_AUTO, "/Users/tianhaochen/Downloads/EN2_IPM_GAMMA_AUTO.csv", row.names=FALSE)
+
+
+
+
+
+
+
+
+  
