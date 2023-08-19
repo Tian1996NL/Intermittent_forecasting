@@ -1,1 +1,139 @@
+import random
+import warnings
+warnings.filterwarnings("ignore")
+from itertools import product
+import numpy as np
+import pandas as pd
+import pyreadr
+from nixtlats.data.datasets.m4 import M4, M4Info, M4Evaluation
+from nixtlats.data.tsdataset import TimeSeriesDataset
+from nixtlats.data.tsloader import TimeSeriesLoader
+from nixtlats.models.esrnn.esrnn import ESRNN
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
+
+cleaned_Data= pyreadr.read_r("/Users/tianhaochen/Downloads/CleanedData.Rdata")
+
+# Preparing the required data format
+data = cleaned_Data["SIM1"]
+#data = cleaned_Data["SIM2"]
+#data = cleaned_Data["SIM3"]
+#data = cleaned_Data["SIM4"]
+#data = pd.read_csv("/Users/tianhaochen/Downloads/AUTO_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/BRAF_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/OIL_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/MAN_x.csv")
+
+
+data=data+0.01 #only for SIM2, SIM3, SIM4, AUTO, BRAF, OIL, and MAN 
+
+num_timestamps, num_unique_numbers = data.shape # Create an array of indices from 1 to the number of unique numbers
+indices = np.arange(1, num_unique_numbers + 1) 
+
+repeated_indices = np.repeat(indices, num_timestamps)m# Repeat the indices for each timestamp
+tiled_timestamps = np.tile(np.arange(1, num_timestamps + 1), num_unique_numbers)
+y_values = data.values.flatten() # Flattingthe original data
+
+repeated_indices = repeated_indices.reshape(-1, 1) # Reshape the arrays to match the stacking dimensions
+indices = np.broadcast_to(repeated_indices, (num_timestamps * num_unique_numbers, 1))
+tiled_timestamps = tiled_timestamps.reshape(-1, 1)
+tiled_timestamps = np.broadcast_to(tiled_timestamps, (num_timestamps * num_unique_numbers, 1))
+y_values = y_values.reshape(-1, 1)
+
+# Combine the transformed columns
+transformed_data = np.hstack((indices, repeated_indices, tiled_timestamps, y_values))
+transformed_data = transformed_data[:, 1:]
+df = pd.DataFrame(transformed_data, columns=['unique_id', 'ds', 'y'])
+#price_sim1['unique_id'] = price_sim1.reset_index().index + 1
+df['ds'] = pd.to_datetime(df['ds'])
+
+#-----------------------------------------------------------------#
+Y_df_test = df.groupby('unique_id').tail(18).copy() # SIMs 
+#Y_df_test = df.groupby('unique_id').tail(7).copy() # AUTO
+#Y_df_test = df.groupby('unique_id').tail(25).copy() # BRAF
+#Y_df_test = df.groupby('unique_id').tail(15).copy() # OIL
+#Y_df_test = df.groupby('unique_id').tail(45).copy() # MAN
+Y_df_train = df.drop(Y_df_test.index)
+
+Y_df_test_test = df.groupby('unique_id').tail().copy()
+Y_df_test.loc[:, 'y'] = 0 # avoiding leaks
+Y_df_full = pd.concat([Y_df_train, Y_df_test]).sort_values(['unique_id', 'ds'], ignore_index=True)
+train_ts_dataset = TimeSeriesDataset(Y_df=Y_df_train,#S_df=price_sim1,
+                                     input_size=8 # SIM
+                                     #input_size=3 # AUTO
+                                     #input_size=12 # BRAF
+                                     #input_size=8 # OIL
+                                     #input_size=21 # MAN , 
+                                     output_size=18
+                                     #output_size=7
+                                     #output_size=25
+                                     #output_size=15
+                                     #output_size=45)
+test_ts_dataset = TimeSeriesDataset(Y_df=Y_df_full, #S_df=price_sim1,
+                                     input_size=8 #SIM
+                                     #input_size=3 #AUTO
+                                     #input_size=12 #BRAF
+                                     #input_size=8 #OIL
+                                     #input_size=21 #MAN,
+                                    output_size=18
+                                     #output_size=7
+                                     #output_size=25
+                                     #output_size=15
+                                     #output_size=45)
+
+train_ts_loader = TimeSeriesLoader(dataset=train_ts_dataset,
+                                   batch_size=12,
+                                   shuffle=False)
+test_ts_loader = TimeSeriesLoader(dataset=test_ts_dataset,
+                                  batch_size=12,
+                                  eq_batch_size=False,
+                                  shuffle=False)
+
+model = ESRNN(n_series=6500 #SIM
+              #n_series=3000 #AUTO
+              #n_series=5000 #BRAF
+              #n_series=7644 #OIL
+              #n_series=1392 #MAN,  
+              n_x=0, n_s=0,
+              sample_freq=1,
+              input_size=8
+              #input_size=3 # AUTO
+              #input_size=12 # BRAF
+              #input_size=8 # OIL
+              #input_size=21 # MAN,,
+              output_size=18
+              #output_size=7
+              #output_size=25
+              #output_size=15
+              #output_size=45,
+              learning_rate=0.0025,
+              lr_scheduler_step_size=6,
+              lr_decay=0.08,
+              per_series_lr_multip=0.8,
+              gradient_clipping_threshold=20,
+              rnn_weight_decay=0,
+              level_variability_penalty=50,
+              testing_percentile=50,
+              training_percentile=50,
+              cell_type='GRU',
+              state_hsize=30,
+              dilations=[[1, 2], [2, 6]],
+              add_nl_layer=True,
+              loss='SMYL',
+              val_loss='SMAPE',
+              seasonality=[])
+trainer = pl.Trainer(max_epochs=15,
+                     progress_bar_refresh_rate=10, 
+                     deterministic=True)
+
+trainer.fit(model, train_ts_loader)
+
+outputs = trainer.predict(model, test_ts_loader)
+_, y_hat, mask = zip(*outputs)
+y_hat = t.cat([y_hat_[:, -1] for y_hat_ in y_hat]).cpu().numpy()
+transposed_y_hat = y_hat.transpose()
+
+mse = mean_squared_error(Y_df_test['y'], transposed_y_hat)
+rmse = np.sqrt(mse)
+mase = mean_absolute_error(Y_df_test['y'], transposed_y_hat) / np.mean(np.abs(np.diff(Y_df_train['y'])))
+rmsse = mase / np.mean(np.abs(np.diff(Y_df_train['y'])))
