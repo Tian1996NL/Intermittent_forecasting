@@ -1,0 +1,233 @@
+
+import pandas as pd
+import numpy as np
+import pyreadr
+import math
+
+cleaned_Data = pyreadr.read_r("/Users/tianhaochen/Downloads/CleanedData.Rdata")
+
+#BRAF
+data = pd.read_csv("/Users/tianhaochen/Downloads/braf_x.csv")
+
+
+train_demand = data[:59]
+df = train_demand
+    
+# Set the aggregation level
+aggregation_level = 2
+#aggregation_level = 3
+#aggregation_level = 4
+#aggregation_level = 5
+#aggregation_level = 6
+
+# Calculate the number of rows in the aggregated dataset
+num_aggregated_rows = len(df) // aggregation_level
+
+# Create a new aggregated dataset
+aggregated_data = np.zeros((num_aggregated_rows, df.shape[1]))
+
+# Iterate over the rows of the original dataset with the specified aggregation level
+for i in range(len(df)-1, -1, -aggregation_level):
+    # Calculate the start and end indices for the aggregation window
+    start_idx = max(0, i-aggregation_level+1)
+    end_idx = i+1
+
+    # Sum the observations within the aggregation window
+    aggregated_data[(len(df)-1-i) // aggregation_level] = df[start_idx:end_idx].sum(axis=0)
+
+# Print the aggregated dataset
+print(aggregated_data)
+
+aggregated_data=pd.DataFrame(aggregated_data)
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/BRAF_2.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/BRAF_3.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/BRAF_4.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/BRAF_5.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/BRAF_6.csv')
+
+# OIL
+train_demand = data[:40]
+df = train_demand
+
+
+# Set the aggregation level
+aggregation_level = 2
+#aggregation_level = 3
+#aggregation_level = 4
+#aggregation_level = 5
+#aggregation_level = 6
+
+
+# Calculate the number of rows in the aggregated dataset
+num_aggregated_rows = len(df) // aggregation_level
+
+# Create a new aggregated dataset
+aggregated_data = np.zeros((num_aggregated_rows, df.shape[1]))
+
+# Iterate over the rows of the original dataset with the specified aggregation level
+for i in range(len(df)-1, -1, -aggregation_level):
+    # Calculate the start and end indices for the aggregation window
+    start_idx = max(0, i-aggregation_level+1)
+    end_idx = i+1
+
+    # Sum the observations within the aggregation window
+    aggregated_data[(len(df)-1-i) // aggregation_level] = df[start_idx:end_idx].sum(axis=0)
+
+# Print the aggregated dataset
+print(aggregated_data)
+
+aggregated_data=pd.DataFrame(aggregated_data)
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/OIL_2.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/OIL_3.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/OIL_4.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/OIL_5.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/OIL_6.csv')
+
+
+
+#AUTO
+data = pd.read_csv("/Users/tianhaochen/Downloads/AUTO_x.csv")
+
+
+train_demand = data[:17]
+df = train_demand
+    
+# Set the aggregation level
+aggregation_level = 2
+#aggregation_level = 3
+#aggregation_level = 4
+
+
+# Calculate the number of rows in the aggregated dataset
+num_aggregated_rows = len(df) // aggregation_level
+
+# Create a new aggregated dataset
+aggregated_data = np.zeros((num_aggregated_rows, df.shape[1]))
+
+# Iterate over the rows of the original dataset with the specified aggregation level
+for i in range(len(df)-1, -1, -aggregation_level):
+    # Calculate the start and end indices for the aggregation window
+    start_idx = max(0, i-aggregation_level+1)
+    end_idx = i+1
+
+    # Sum the observations within the aggregation window
+    aggregated_data[(len(df)-1-i) // aggregation_level] = df[start_idx:end_idx].sum(axis=0)
+
+# Print the aggregated dataset
+print(aggregated_data)
+
+aggregated_data=pd.DataFrame(aggregated_data)
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/AUTO_2.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/AUTO_3.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/AUTO_4.csv')
+
+#MAN
+data = pd.read_csv("/Users/tianhaochen/Downloads/MAN_x.csv")
+
+
+train_demand = data[:40]
+df = train_demand
+    
+
+
+
+
+# Set the aggregation level
+aggregation_level = 5
+#aggregation_level = 6
+#aggregation_level = 7
+#aggregation_level = 8
+#aggregation_level = 9
+
+
+# Calculate the number of rows in the aggregated dataset
+num_aggregated_rows = len(df) // aggregation_level
+
+# Create a new aggregated dataset
+aggregated_data = np.zeros((num_aggregated_rows, df.shape[1]))
+
+# Iterate over the rows of the original dataset with the specified aggregation level
+for i in range(len(df)-1, -1, -aggregation_level):
+    # Calculate the start and end indices for the aggregation window
+    start_idx = max(0, i-aggregation_level+1)
+    end_idx = i+1
+
+    # Sum the observations within the aggregation window
+    aggregated_data[(len(df)-1-i) // aggregation_level] = df[start_idx:end_idx].sum(axis=0)
+
+# Print the aggregated dataset
+print(aggregated_data)
+
+aggregated_data=pd.DataFrame(aggregated_data)
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/MAN_5.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/MAN_6.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/MAN_7.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/MAN_8.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/MAN_9.csv')
+
+#SIM Data sets 
+data = cleaned_Data["SIM1"]
+#data = cleaned_Data["SIM2"]
+#data = cleaned_Data["SIM3"]
+#data = cleaned_Data["SIM4"]
+
+
+train_demand = data[:42]
+df = train_demand
+    
+
+
+
+
+# Set the aggregation level
+aggregation_level = 2
+#aggregation_level = 3
+#aggregation_level = 4
+#aggregation_level = 5
+#aggregation_level = 6
+
+
+# Calculate the number of rows in the aggregated dataset
+num_aggregated_rows = len(df) // aggregation_level
+
+# Create a new aggregated dataset
+aggregated_data = np.zeros((num_aggregated_rows, df.shape[1]))
+
+# Iterate over the rows of the original dataset with the specified aggregation level
+for i in range(len(df)-1, -1, -aggregation_level):
+    # Calculate the start and end indices for the aggregation window
+    start_idx = max(0, i-aggregation_level+1)
+    end_idx = i+1
+
+    # Sum the observations within the aggregation window
+    aggregated_data[(len(df)-1-i) // aggregation_level] = df[start_idx:end_idx].sum(axis=0)
+
+# Print the aggregated dataset
+print(aggregated_data)
+
+aggregated_data=pd.DataFrame(aggregated_data)
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/SIM1_2.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/SIM1_3.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/SIM1_4.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/SIM1_5.csv')
+aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM1_aggregaton/SIM1_6.csv')
+
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM2_2.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM2_3.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM2_4.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM2_5.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM2_6.csv')
+
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM3_2.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM3_3.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM3_4.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM3_5.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM3_6.csv')
+
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM4_2.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM4_3.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM4_4.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM4_5.csv')
+#aggregated_data.to_csv('/Users/tianhaochen/Desktop/SIM2_aggregaton/SIM4_6.csv')
+
+
