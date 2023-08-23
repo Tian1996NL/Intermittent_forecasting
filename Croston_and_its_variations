@@ -1,0 +1,134 @@
+from statsforecast import StatsForecast
+from statsforecast.models import CrostonSBA
+from statsforecast.models import TSB
+from statsforecast.models import CrostonClassic
+from statsforecast.models import CrostonOptimized
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import pyreadr
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+from itertools import product
+import itertools 
+
+
+cleaned_Data = pyreadr.read_r("/Users/tianhaochen/Downloads/CleanedData.Rdata")
+data = cleaned_Data["SIM1"]
+#data = cleaned_Data["SIM2"]
+#data = cleaned_Data["SIM3"]
+#data = cleaned_Data["SIM4"]
+#data = pd.read_csv("/Users/tianhaochen/Downloads/AUTO_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/BRAF_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/OIL_x.csv")
+#data = pd.read_csv("/Users/tianhaochen/Downloads/MAN_x.csv")
+
+demand = data.values
+train_demand = demand[:42,]
+test_demand = demand[42:]
+#train_demand = demand[:40,] #OIL
+#test_demand = demand[40:]
+#train_demand = demand[:59,] #BRAF
+#test_demand = demand[59:]
+#train_demand = demand[:105,]#MAN
+#test_demand = demand[105:]
+#train_demand = demand[:17,] #AUTO
+#test_demand = demand[17:]
+
+
+h = 18
+#h = 15    #OIL
+#h = 45    #MAN
+#h = 25    #BRAF
+#h = 7     #AUTO
+
+models = [CrostonClassic(),
+          CrostonOptimized(),
+          CrostonSBA()]
+
+# Create a list of empty arrays to store the predictions for each model and column
+y_hat_arrays = [np.empty((h, train_demand.shape[1])) for _ in models]
+
+# Loop over each column in the new data
+for i in range(train_demand.shape[1]):
+    y = train_demand[:, i]  
+    
+    # Loop over each model
+    for j, model in enumerate(models):
+        model.fit(y=y)  # Fit the model with the current column
+        y_hat_dict = model.predict(h=h)
+        y_hat_arrays[j][:, i] = np.array(list(y_hat_dict.values()))
+
+y_hat_array_croston_classic, y_hat_array_croston_optimized,y_hat_array_croston_sba = y_hat_arrays
+
+
+alpha_d_range = np.arange(0.01, 1.0, 0.2)
+alpha_p_range = np.arange(0.01, 1.0, 0.2)
+
+best_mse = float('inf')
+best_alpha_d = None
+best_alpha_p = None
+
+for alpha_d in alpha_d_range:
+    for alpha_p in alpha_p_range:
+        tsb_model = TSB(alpha_d=alpha_d, alpha_p=alpha_p)
+        y_hat_arrays_tsb = np.empty((h, train_demand.shape[1]))
+
+        for i in range(train_demand.shape[1]):
+            y = train_demand[:, i]
+            tsb_model.fit(y=y)
+            y_hat_dict = tsb_model.predict(h=h)
+            y_hat_arrays_tsb[:, i] = np.array(list(y_hat_dict.values()))
+
+        # Calculate MSE for the current alpha_d, alpha_p combination
+        mse = np.mean((y_hat_arrays_tsb - train_demand[-h:, :])**2)
+
+        if mse < best_mse:
+            best_mse = mse
+            best_alpha_d = alpha_d
+            best_alpha_p = alpha_p
+
+y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/SIM1_Croston.csv')
+y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/SIM1_CrostonT.csv')
+y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/SIM1_CrostonT.csv')
+y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/SIM1_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/SIM2_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/SIM2_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/SIM2_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/SIM2_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/SIM3_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/SIM3_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/SIM3_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/SIM3_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/SIM4_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/SIM4_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/SIM4_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/SIM4_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/BRAF_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/BRAF_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/BRAF_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/BRAF_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/OIL_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/OIL_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/OIL_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/OIL_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/MAN_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/MAN_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/MAN_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/MAN_TSB.csv')
+
+#y_hat_array_croston_classic.to_csv('/Users/tianhaochen/Desktop/predictions/AUTO_Croston.csv')
+#y_hat_array_croston_optimized,.to_csv('/Users/tianhaochen/Desktop/predictions/AUTO_CrostonT.csv')
+#y_hat_array_croston_sba.to_csv('/Users/tianhaochen/Desktop/predictions/AUTO_CrostonT.csv')
+#y_hat_arrays_tsb.to_csv('/Users/tianhaochen/Desktop/predictions/AUTO_TSB.csv')
+
+
+
+
+
